@@ -1,0 +1,189 @@
+---
+title: "SPARS_A: Width of pain threshold"
+author: "Tory Madden and Peter Kamerman"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+output: 
+  html_document:
+    theme: yeti
+    hightlight: pygments
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    code_folding: show
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+# Load packages
+library(tidyverse)
+library(magrittr)
+library(boot)
+
+# knitr setup
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE,
+                      fig.height = 8,
+                      fig.width = 8,
+                      fig.path = './figures/SPARSA_plots/',
+                      cache = TRUE)
+```
+
+```{r data, include = FALSE}
+
+# Read in data
+df <- read_rds('./data/SPARS_A.rds')
+```
+
+
+# Analysis question
+
+How wide is the pain threshold on the SPARS (2015 data)?
+
+Here, we calculated the median and bootstrapped CI for each individual, at each intensity rank. Next, we plotted those statistics to show how many of each individual's CIs crossed zero. We also repeated the process with group-level data, not grouping by individual.
+
+# Bootstrapping procedure
+
+```{r bootstrap_indiv}
+
+# SPARS
+
+# Nest in preparation for bootstrapping
+
+df_boot_SPARS <- df %>%
+  group_by(PID, intensity) %>%
+  nest()
+
+# Bootstrap function
+
+boot_median_SPARS <- function(d,i){
+  median(d[i], na.rm = TRUE)
+}
+
+# Make bootstrap
+
+df_boot_SPARS %<>% mutate(boot = map(.x = data, 
+                               ~ boot(data = .x$rating, 
+                                      statistic = boot_median_SPARS, 
+                                      R = 10000,
+                                      stype = 'i')))
+
+df_boot_SPARS %<>% mutate(boot_ci = map(.x = boot,
+                               ~ boot.ci(.x,
+                                        type = 'basic')))
+
+# Extract the data, giving original median and bootstrapped CI
+
+df_boot_SPARS %<>% mutate(median = map(.x = boot_ci,
+                                 ~ .x$t0),
+                    lower_ci = map(.x = boot_ci,
+                                   ~ .x$basic[[4]]),
+                    upper_ci = map(.x = boot_ci,
+                                   ~ .x$basic[[5]]))
+
+# Remove NULL value (id: 04NK Intensity: 3.25)
+df_boot_SPARS[56, c(6:8)] <- 20
+
+# Delete unwanted columns 
+## Needed a weird work-around
+
+df_boot_SPARS %<>% select(-data, -boot, -boot_ci)
+
+med <- unlist(df_boot_SPARS$median)
+low <- unlist(df_boot_SPARS$lower_ci)
+upper <- unlist(df_boot_SPARS$upper_ci)  
+
+df_boot_SPARS <- data_frame(id = df_boot_SPARS$id,
+                           intensity = df_boot_SPARS$intensity,
+                           median = med,
+                           lower_ci = low,
+                           upper_ci = upper) %>%
+  # Clean impossible ratings
+  mutate(upper_ci = ifelse(upper_ci > 50,
+                           yes = 50,
+                           no = upper_ci),
+         lower_ci = ifelse(lower_ci < -50,
+                           yes = -50,
+                           no = lower_ci)) 
+```
+
+# Plots at individual level
+
+```{r plots_indiv}
+
+# Plot individual CIs at every intensity
+
+ggplot(data = df_boot_SPARS) +
+  aes(x = as.factor(intensity)) +
+  geom_crossbar(aes(y = median,
+                    ymin = lower_ci,
+                    ymax = upper_ci)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~ id, nrow = 3) +
+  labs(title = "Bootstrapped 95% CI for each participant's median SPARS rating at each intensity")
+```
+
+```{r bootstrap_group}
+
+# Nest in preparation for bootstrapping
+
+df_boot_group_SPARS <- df %>%
+  group_by(intensity) %>%
+  nest()
+
+# Bootstrap function
+
+boot_median_SPARS <- function(d,i){
+  median(d[i])
+}
+
+# Make bootstrap
+
+df_boot_group_SPARS %<>% mutate(boot = map(.x = data, 
+                               ~ boot(data = .x$rating, 
+                                      statistic = boot_median_SPARS, 
+                                      R = 10000,
+                                      stype = 'i')))
+
+df_boot_group_SPARS %<>% mutate(boot_ci = map(.x = boot,
+                                  ~ boot.ci(.x,
+                                            type = 'basic')))
+
+# Extract the data, giving original median and bootstrapped CI
+
+df_boot_group_SPARS %<>% mutate(median = map(.x = boot_ci,
+                                 ~ .x$t0),
+                    lower_ci = map(.x = boot_ci,
+                                   ~ .x$basic[[4]]),
+                    upper_ci = map(.x = boot_ci,
+                                   ~ .x$basic[[5]]))
+
+# Delete unwanted columns
+
+df_boot_group_SPARS %<>% select (-data, -boot, -boot_ci) %>%
+  unnest()
+```
+
+# Plots at group level
+
+```{r plots_group}
+
+# Plot group CIs at every intensity
+
+ggplot(data = df_boot_group_SPARS) +
+  aes(x = as.factor(intensity)) +
+  geom_crossbar(aes(y = median,
+                    ymin = lower_ci,
+                    ymax = upper_ci)) +
+  geom_hline(yintercept = 0) +
+  labs(title = "Bootstrapped 95% CI for group median SPARS ratings at each intensity rank")
+```
+
+# Conclusion
+
+On the SPARS scale, with these data, between 2 and 9  of 13 different intensities of laser stimulation lay over the pain threshold for 19 participants, as indicated by the bootstrapped 95% confidence interval for the median SPARS rating crossing zero.  At the group level, 4 of 13 intensities of laser stimulation lay over the pain threshold.
+
+## Session information
+```{r session_info}
+sessionInfo()
+```
