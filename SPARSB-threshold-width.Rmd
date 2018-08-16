@@ -93,32 +93,32 @@ df_boot_SPARS %<>% select (-data, -boot, -boot_ci) %>%
                            yes = -50,
                            no = lower_ci)) 
 
-# CNRS
+# NRS
 
 # Nest in preparation for bootstrapping
 
-df_boot_CNRS <- df %>%
-  filter(scale == 'CNRS_P') %>%
+df_boot_NRS <- df %>%
+  filter(scale == 'NRS') %>%
   group_by(id, intensity_rank) %>%
   nest()
 
 # Bootstrap function
 
-boot_median_CNRS <- function(d,i){
+boot_median_NRS <- function(d,i){
   median(d[i])
 }
 
 # Make bootstrap
 
-df_boot_CNRS %<>% mutate(boot = map(.x = data, 
-                               ~ boot(data = .x$rating, 
-                                      statistic = boot_median_CNRS, 
-                                      R = 10000,
-                                      stype = 'i')))
+df_boot_NRS %<>% mutate(boot = map(.x = data, 
+                                   ~ boot(data = .x$rating, 
+                                          statistic = boot_median_NRS, 
+                                          R = 10000,
+                                          stype = 'i')))
 
-df_boot_CNRS %<>% mutate(boot_ci = map(.x = boot,
-                               ~ boot.ci(.x,
-                                        type = 'basic')))
+df_boot_NRS %<>% mutate(boot_ci = map(.x = boot,
+                                      ~ boot.ci(.x,
+                                                type = 'basic')))
 
 # Extract the data, giving original median and bootstrapped CI
 
@@ -141,12 +141,12 @@ df_boot_CNRS %<>% select (-data, -boot, -boot_ci) %>%
                            yes = 0,
                            no = lower_ci)) 
 
-# NRS_NP
+# SRS
 
 # Nest in preparation for bootstrapping
 
 df_boot_NRS <- df %>%
-  filter(scale == 'NRS_NP') %>%
+  filter(scale == 'SRS') %>%
   filter(!is.na(rating)) %>%
   group_by(id, intensity_rank) %>%
   nest()

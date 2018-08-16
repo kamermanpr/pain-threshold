@@ -10,8 +10,6 @@ output:
     toc_depth: 5
     toc_float: true
     code_folding: show
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -20,66 +18,74 @@ library(tidyverse)
 library(magrittr)
 library(boot)
 
+# Set ggplot theme
+theme_set(new = theme_bw())
+
 # knitr setup
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
                       fig.height = 8,
                       fig.width = 8,
+                      fig.align = 'center',
                       fig.path = './figures/SPARSA_plots/',
                       cache = TRUE)
 ```
 
-```{r data, include = FALSE}
+----
 
-# Read in data
-df <- read_rds('./data/SPARS_A.rds')
-```
-
-
-# Analysis question
-
-How wide is the pain threshold on the SPARS (2015 data)?
+# Question
+How wide is the pain threshold on the SPARS_A data?
 
 Here, we calculated the median and bootstrapped CI for each individual, at each intensity rank. Next, we plotted those statistics to show how many of each individual's CIs crossed zero. We also repeated the process with group-level data, not grouping by individual.
+
+----
+
+# Import and inspect data
+
+```{r import}
+# Import
+data <- read_rds('data/SPARS_A.rds')
+
+# Inspect
+glimpse(data)
+```
+
+----
 
 # Bootstrapping procedure
 
 ```{r bootstrap_indiv}
-
-# SPARS
-
 # Nest in preparation for bootstrapping
-
-df_boot_SPARS <- df %>%
+data_boot <- data %>%
   group_by(PID, intensity) %>%
   nest()
 
-# Bootstrap function
-
-boot_median_SPARS <- function(d,i){
+# Define bootstrap function
+boot_median <- function(d,i){
   median(d[i], na.rm = TRUE)
 }
 
-# Make bootstrap
+# Perform bootstrap
+data_boot %<>% 
+    mutate(boot = map(.x = data, 
+                      ~ boot(data = .x$rating, 
+                             statistic = boot_median, 
+                             R = 1999,
+                             stype = 'perc')))
 
-df_boot_SPARS %<>% mutate(boot = map(.x = data, 
-                               ~ boot(data = .x$rating, 
-                                      statistic = boot_median_SPARS, 
-                                      R = 10000,
-                                      stype = 'i')))
-
-df_boot_SPARS %<>% mutate(boot_ci = map(.x = boot,
-                               ~ boot.ci(.x,
-                                        type = 'basic')))
+data_boot %<>% 
+    mutate(boot_ci = map(.x = boot,
+                         ~ boot.ci(.x,
+                                   type = 'basic')))
 
 # Extract the data, giving original median and bootstrapped CI
-
-df_boot_SPARS %<>% mutate(median = map(.x = boot_ci,
-                                 ~ .x$t0),
-                    lower_ci = map(.x = boot_ci,
-                                   ~ .x$basic[[4]]),
-                    upper_ci = map(.x = boot_ci,
-                                   ~ .x$basic[[5]]))
+data_boot %<>% 
+    mutate(median = map_dbl(.x = boot_ci,
+                            ~ .x$t0),
+           lower_ci = map_dbl(.x = boot_ci,
+                              ~ .x$perc[[4]]),
+           upper_ci = map_dbl(.x = boot_ci,
+                              ~ .x$perc[[5]]))
 
 # Remove NULL value (id: 04NK Intensity: 3.25)
 df_boot_SPARS[56, c(6:8)] <- 20

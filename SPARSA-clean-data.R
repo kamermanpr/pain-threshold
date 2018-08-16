@@ -22,7 +22,7 @@ data %<>%
   rename(PID = Subject,
          trial_number = `Trial number`,
          intensity = Intensity, # Laser stimulus
-         rating = Rating, # FEST rating
+         rating = Rating, # SPARS rating
          EDA = `CDA.SCR [muS]`, # Electrodermal reaction
          panas_positive = PA, # Positive and Negative Affect Schedule (PANAS)
          panas_negative = `NA`, # PANAS
@@ -45,7 +45,8 @@ data %<>%
     ))
 
 ## Cross tabulate PID and block_number to check crossed effects
-xtabs(~ PID + block_order, data = data)
+xtabs(~ PID + block_order,
+      data = data)
 
 ## Block type
 ### Get a collapsed list of intensities to define blocks
@@ -66,8 +67,11 @@ blocks <- data %>%
 ##### Remove ID15 (only one block)
 blocks %<>%
   filter(!PID %in% c('ID05', 'ID06', 'ID12', 'ID15'))
+
 blocks_unique <- unique(blocks$stimulus_order)
+
 length(blocks_unique)
+
 blocks_unique
 
 # Merge 'blocks' back into data
@@ -92,7 +96,7 @@ data %<>%
 data %<>%
   mutate(intensity_char = sprintf('%.2f', intensity))
 
-## Converted FEST to a 0-100 positive scale
+## Converted SPARS to a 0-100 positive scale
 data %<>%
   mutate(rating_positive = rating + 50)
 
