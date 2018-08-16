@@ -4,8 +4,9 @@
 .Ruserdata
 .DS_Store
 *_cache/
-data/
-Original-data/
-README.*
+*.txt
+*.csv
+*.rds
+*.xlsx
 .dropbox
 Icon?
