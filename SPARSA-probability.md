@@ -1,7 +1,7 @@
 ---
 title: "SPARS_A: probability of rating including zero"
 author: "Peter Kamerman and Tory Madden"
-date: "`r format(Sys.Date(), '%d %b %Y')`"
+date: "22 Aug 2018"
 output: 
   html_document:
     keep_md: true
@@ -13,24 +13,7 @@ output:
     code_folding: show
 ---
 
-```{r setup, include = FALSE}
-# Load packages
-library(tidyverse)
-library(magrittr)
-library(boot)
 
-# Set ggplot theme
-theme_set(new = theme_bw())
-
-# knitr setup
-knitr::opts_chunk$set(warning = FALSE,
-                      message = FALSE,
-                      fig.height = 8,
-                      fig.width = 8,
-                      fig.align = 'center',
-                      fig.path = './figures/SPARSA_probability/',
-                      cache = TRUE)
-```
 
 ----
 
@@ -45,7 +28,8 @@ The binomial distribution estimates that extreme values for a sequence of eight 
 
 ## Import and inspect data
 
-```{r import}
+
+```r
 # Import
 data <- read_rds('data/SPARS_A.rds')
 
@@ -53,11 +37,36 @@ data <- read_rds('data/SPARS_A.rds')
 glimpse(data)
 ```
 
+```
+## Observations: 1,823
+## Variables: 19
+## $ PID               <chr> "ID01", "ID01", "ID01", "ID01", "ID01", "ID0...
+## $ block             <chr> "A", "A", "A", "A", "A", "A", "A", "A", "A",...
+## $ block_order       <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ trial_number      <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...
+## $ intensity         <dbl> 3.75, 1.50, 3.25, 1.50, 3.00, 2.75, 1.00, 2....
+## $ intensity_char    <chr> "3.75", "1.50", "3.25", "1.50", "3.00", "2.7...
+## $ rating            <dbl> -10, -40, -10, -25, -20, -25, -40, 2, -40, -...
+## $ rating_positive   <dbl> 40, 10, 40, 25, 30, 25, 10, 52, 10, 40, 54, ...
+## $ EDA               <dbl> 18315.239, 13904.177, 11543.449, 20542.834, ...
+## $ age               <dbl> 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, ...
+## $ sex               <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,...
+## $ panas_positive    <dbl> 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, ...
+## $ panas_negative    <dbl> 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, ...
+## $ dass42_depression <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ dass42_anxiety    <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ dass42_stress     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ pcs_magnification <dbl> 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,...
+## $ pcs_rumination    <dbl> 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, ...
+## $ pcs_helplessness  <dbl> 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, ...
+```
+
 ----
 
 ## Resample data and calculate simple probability
 
-```{r resample}
+
+```r
 # Nest in preparation for resampling by intenisty within each participant
 data_boot <- data %>%
     # Select columns
@@ -110,14 +119,16 @@ data_boot %<>%
 
 ### Prepare data
 
-```{r plot_data}
+
+```r
 plot_data <- data_boot %>% 
     select(PID, intensity, probability)
 ```
 
 ### Heatmap
 
-```{r heatmap}
+
+```r
 # Draw heatmap of probabilities across stimulus intensities
 ggplot(data = plot_data) +
     aes(x = intensity,
@@ -139,10 +150,13 @@ ggplot(data = plot_data) +
           panel.grid = element_blank())
 ```
 
+<img src="./figures/SPARSA_probability/heatmap-1.png" style="display: block; margin: auto;" />
+
 
 ### Barplot
 
-```{r barplot}
+
+```r
 # Draw a barplot of probabilities across stimulus intensities
 ggplot(data = plot_data) +
     aes(x = intensity,
@@ -162,10 +176,52 @@ ggplot(data = plot_data) +
     theme(panel.grid = element_blank())
 ```
 
+<img src="./figures/SPARSA_probability/barplot-1.png" style="display: block; margin: auto;" />
+
 ----
 
 ## Session information
 
-```{r session_info}
+
+```r
 sessionInfo()
+```
+
+```
+## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS High Sierra 10.13.6
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] bindrcpp_0.2.2  boot_1.3-20     magrittr_1.5    forcats_0.3.0  
+##  [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
+##  [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.18      cellranger_1.1.0  pillar_1.3.0     
+##  [4] compiler_3.5.1    plyr_1.8.4        bindr_0.1.1      
+##  [7] tools_3.5.1       digest_0.6.15     viridisLite_0.3.0
+## [10] lubridate_1.7.4   jsonlite_1.5      evaluate_0.11    
+## [13] nlme_3.1-137      gtable_0.2.0      lattice_0.20-35  
+## [16] pkgconfig_2.0.1   rlang_0.2.1       cli_1.0.0        
+## [19] rstudioapi_0.7    yaml_2.2.0        haven_1.1.2      
+## [22] withr_2.1.2       xml2_1.2.0        httr_1.3.1       
+## [25] knitr_1.20        hms_0.4.2         rprojroot_1.3-2  
+## [28] grid_3.5.1        tidyselect_0.2.4  glue_1.3.0       
+## [31] R6_2.2.2          readxl_1.1.0      rmarkdown_1.10   
+## [34] modelr_0.1.2      codetools_0.2-15  backports_1.1.2  
+## [37] scales_0.5.0.9000 htmltools_0.3.6   rvest_0.3.2      
+## [40] assertthat_0.2.0  colorspace_1.3-2  labeling_0.3     
+## [43] stringi_1.2.4     lazyeval_0.2.1    munsell_0.5.0    
+## [46] broom_0.5.0       crayon_1.3.4
 ```
