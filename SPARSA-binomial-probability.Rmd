@@ -1,0 +1,510 @@
+---
+title: 'SPARS_A: binomial probability'
+author: "Peter Kamerman and Tory Madden"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+output: 
+  html_document:
+    keep_md: true
+    theme: yeti
+    hightlight: pygments
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include = FALSE}
+# Load packages
+library(tidyverse)
+library(magrittr)
+library(boot)
+
+# Set ggplot theme
+theme_set(new = theme_bw(base_size = 14))
+
+# knitr setup
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE,
+                      fig.height = 8,
+                      fig.width = 8,
+                      fig.align = 'center',
+                      fig.path = './figures/SPARSA_binomial/')
+```
+
+----
+
+## Question
+For each stimulus intenisty, what is the probability that the set of 12 repeated stimuli include zero?
+
+To assess the probability, we modelled the data using the binomial test with a 50% probability of _'success'_ (positive rating arbitrarily chosen as success) at each stimulus intensity for each participant. Significance was assessed at the $\alpha$ = 0.05 level, using a two-tailed probability. 
+
+----
+
+## Import and inspect data
+
+```{r import}
+# Import
+data <- read_rds('data/SPARS_A.rds')
+
+# Inspect
+glimpse(data)
+```
+
+----
+
+## Define probability of success
+
+### Generate sequences
+
+```{r prob_success}
+# Flat probability of 0.5 for all stimulus intensities
+p_flat0.5 <- rep(0.5, 13)
+
+# Increasing probability from 0.5 to 0.6
+p_0.6 <- seq(from = 0.5,
+             to = 0.6, 
+             length.out = 13)
+
+# Increasing probability from 0.5 to 0.8
+p_0.8 <- seq(from = 0.5,
+             to = 0.8, 
+             length.out = 13)
+
+# Increasing probability from 0.5 to 0.95
+p_0.95 <- seq(from = 0.5,
+             to = 0.95, 
+             length.out = 13)
+
+```
+
+### Visualise sequences
+
+```{prob_plot}
+# Create dataframe
+prob_data <- data_frame(intensity = seq(from = 1, 
+                                        to = 4,
+                                        by = 0.25),
+                        `1. p=0.5` = p_flat0.5,
+                        `2. p=0.5 to p=0.6` = p_0.6,
+                        `3. p=0.5 to p=0.8` = p_0.8,
+                         `4. p=0.5 to p=0.95` = p_0.95) 
+
+# Plot dataframe 
+prob_data %>% 
+    gather(key = key, value = value,
+           -intensity) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = value,
+        colour = key,
+        fill = key) +
+    geom_line() +
+    geom_point(shape = 21,
+               size = 4,
+               fill = '#FFFFFF') +
+    geom_point(shape = 21,
+               size = 4,
+               colour = '#000000') +
+    scale_x_continuous(breaks = seq(1, 4, by = 0.5)) +
+    scale_y_continuous(limits = c(0.5, 1)) +
+    scale_colour_viridis_d(name = 'Senario',
+                           option = 'D') +
+    scale_fill_viridis_d(name = 'Senario',
+                         option = 'D') +
+    labs(title = 'Probability of success (ratings not including zero) vs stimulus intensity',
+         x = 'Stimulus intensity (J)',
+         y = 'Probability')
+
+```
+----
+
+## Process data
+
+```{r process_data}
+# Select columns
+data %<>%
+    select(PID, intensity, rating)
+
+# Nest data by PID and stimulus intensity
+data_nest <- data %>% 
+    group_by(PID, intensity) %>% 
+    nest()
+
+#-- Probability of success: 0.5 flat --#
+
+# Generate plot data
+data_0.5flat <- data_nest %>% 
+    # Add probability of success column
+    mutate(prob = 0.5) %>% 
+    # Extract rating data from dataframe
+    mutate(data_vec = map(.x = data,
+                          ~ .$rating)) %>% 
+    # Recode rating data as categories according to sign
+    mutate(data_cat = map(.x = data_vec,
+                          ~ ifelse(.x < 0,
+                                   yes = 'negative',
+                                   no = ifelse(.x > 0,
+                                               yes = 'positive',
+                                               no = 'zero')))) %>% 
+    # Count the number of positive and negative ratings
+    ## positive numbers arbitrarily listed first == 'success'
+    mutate(success_count = map(.x = data_cat,
+                           ~ c(length(.x[.x == 'positive']), 
+                               length(.x[.x == 'negative'])))) %>% 
+    # Conduct binomial test (two-sided)
+    mutate(binomial_test = map2(.x = success_count,
+                                .y = prob,
+                                ~ binom.test(x = .x, 
+                                             p = .y))) %>% 
+    # Extract p-value from binomial_test
+    mutate(binomial_p.value = map(.x = binomial_test,
+                                 ~ .x$p.value %>% 
+                                     round(., 3))) %>% 
+    # Categorise p-value using a p < 0.05 threshold
+    ## No correction for multiple comparisons 
+    ## (too conservative for explorartory analysis)
+    mutate(binomial_p.interpretation = map(.x = binomial_p.value,
+                                           ~ ifelse(.x < 0.05,
+                                                    yes = 'significant',
+                                                    no = 'not significant')))
+
+# Plot
+data_0.5flat %>% 
+    # Select data columns
+    select(PID, intensity, binomial_p.interpretation) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Recode binomial_p.interpretation
+    mutate(binomial_p.interpretation = 
+               ifelse(binomial_p.interpretation == 'significant',
+                      yes = 'Yes',
+                      no = 'No')) %>% 
+    # Join with original data
+    right_join(data) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    # Plot
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating) +
+    geom_hline(yintercept = 0) +
+    geom_point(aes(fill = binomial_p.interpretation),
+               colour = '#000000',
+               shape = 21,
+               size = 3,
+               alpha = 0.7) + 
+    labs(title = "Probability of 'success' = 0.5: Binomial test of positive/negative rating distribution",
+         subtitle = '(alpha = 0.05 | two-tailed p-value)',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating') +
+    scale_x_discrete(breaks = seq(1, 4, by = 0.5),
+                     labels = sprintf('%.2f', seq(1, 4, by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50)) +
+    scale_fill_viridis_d(name = 'Deviates significantly: ',
+                         option = 'C') +
+    scale_colour_viridis_d(name = 'Deviates from expected: ',
+                           option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90, 
+                                     hjust = 0, 
+                                     vjust = 0.5))
+
+#-- Probability of success: linear increase from 0.5 to 0.6 --#
+
+# Generate plot data
+data_0.6 <- data_nest %>% 
+    # Add probability of success column
+    mutate(prob = case_when(
+        intensity == 1.00 ~ prob_data$`2. p=0.5 to p=0.6`[[1]],
+        intensity == 1.25 ~ prob_data$`2. p=0.5 to p=0.6`[[2]],
+        intensity == 1.50 ~ prob_data$`2. p=0.5 to p=0.6`[[3]],
+        intensity == 1.75 ~ prob_data$`2. p=0.5 to p=0.6`[[4]],
+        intensity == 2.00 ~ prob_data$`2. p=0.5 to p=0.6`[[5]],
+        intensity == 2.25 ~ prob_data$`2. p=0.5 to p=0.6`[[6]],
+        intensity == 2.50 ~ prob_data$`2. p=0.5 to p=0.6`[[7]],
+        intensity == 2.75 ~ prob_data$`2. p=0.5 to p=0.6`[[8]],
+        intensity == 3.00 ~ prob_data$`2. p=0.5 to p=0.6`[[9]],
+        intensity == 3.25 ~ prob_data$`2. p=0.5 to p=0.6`[[10]],
+        intensity == 3.50 ~ prob_data$`2. p=0.5 to p=0.6`[[11]],
+        intensity == 3.75 ~ prob_data$`2. p=0.5 to p=0.6`[[12]],
+        intensity == 4.00 ~ prob_data$`2. p=0.5 to p=0.6`[[13]]
+    )) %>% 
+    # Extract rating data from dataframe
+    mutate(data_vec = map(.x = data,
+                          ~ .$rating)) %>% 
+    # Recode rating data as categories according to sign
+    mutate(data_cat = map(.x = data_vec,
+                          ~ ifelse(.x < 0,
+                                   yes = 'negative',
+                                   no = ifelse(.x > 0,
+                                               yes = 'positive',
+                                               no = 'zero')))) %>% 
+    # Count the number of positive and negative ratings
+    ## positive numbers arbitrarily listed first == 'success'
+    mutate(success_count = map(.x = data_cat,
+                           ~ c(length(.x[.x == 'positive']), 
+                               length(.x[.x == 'negative'])))) %>% 
+    # Conduct binomial test (two-sided)
+    mutate(binomial_test = map2(.x = success_count,
+                                .y = prob,
+                                ~ binom.test(x = .x, 
+                                             p = .y))) %>% 
+    # Extract p-value from binomial_test
+    mutate(binomial_p.value = map(.x = binomial_test,
+                                 ~ .x$p.value %>% 
+                                     round(., 3))) %>% 
+    # Categorise p-value using a p < 0.05 threshold
+    ## No correction for multiple comparisons 
+    ## (too conservative for explorartory analysis)
+    mutate(binomial_p.interpretation = map(.x = binomial_p.value,
+                                           ~ ifelse(.x < 0.05,
+                                                    yes = 'significant',
+                                                    no = 'not significant')))
+
+# Plot
+data_0.6 %>% 
+    # Select data columns
+    select(PID, intensity, binomial_p.interpretation) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Recode binomial_p.interpretation
+    mutate(binomial_p.interpretation = 
+               ifelse(binomial_p.interpretation == 'significant',
+                      yes = 'Yes',
+                      no = 'No')) %>% 
+    # Join with original data
+    right_join(data) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    # Plot
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating) +
+    geom_hline(yintercept = 0) +
+    geom_point(aes(fill = binomial_p.interpretation),
+               colour = '#000000',
+               shape = 21,
+               size = 3,
+               alpha = 0.7) + 
+    labs(title = "Probability of 'success' from 0.5 to 0.6: Binomial test of positive/negative rating distribution",
+         subtitle = '(alpha = 0.05 | two-tailed p-value)',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating') +
+    scale_x_discrete(breaks = seq(1, 4, by = 0.5),
+                     labels = sprintf('%.2f', seq(1, 4, by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50)) +
+    scale_fill_viridis_d(name = 'Deviates significantly: ',
+                         option = 'C') +
+    scale_colour_viridis_d(name = 'Deviates from expected: ',
+                           option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90, 
+                                     hjust = 0, 
+                                     vjust = 0.5))
+
+#-- Probability of success: linear increase from 0.5 to 0.8 --#
+
+# Generate plot data
+data_0.8 <- data_nest %>% 
+    # Add probability of success column
+    mutate(prob = case_when(
+        intensity == 1.00 ~ prob_data$`3. p=0.5 to p=0.8`[[1]],
+        intensity == 1.25 ~ prob_data$`3. p=0.5 to p=0.8`[[2]],
+        intensity == 1.50 ~ prob_data$`3. p=0.5 to p=0.8`[[3]],
+        intensity == 1.75 ~ prob_data$`3. p=0.5 to p=0.8`[[4]],
+        intensity == 2.00 ~ prob_data$`3. p=0.5 to p=0.8`[[5]],
+        intensity == 2.25 ~ prob_data$`3. p=0.5 to p=0.8`[[6]],
+        intensity == 2.50 ~ prob_data$`3. p=0.5 to p=0.8`[[7]],
+        intensity == 2.75 ~ prob_data$`3. p=0.5 to p=0.8`[[8]],
+        intensity == 3.00 ~ prob_data$`3. p=0.5 to p=0.8`[[9]],
+        intensity == 3.25 ~ prob_data$`3. p=0.5 to p=0.8`[[10]],
+        intensity == 3.50 ~ prob_data$`3. p=0.5 to p=0.8`[[11]],
+        intensity == 3.75 ~ prob_data$`3. p=0.5 to p=0.8`[[12]],
+        intensity == 4.00 ~ prob_data$`3. p=0.5 to p=0.8`[[13]]
+    )) %>% 
+    # Extract rating data from dataframe
+    mutate(data_vec = map(.x = data,
+                          ~ .$rating)) %>% 
+    # Recode rating data as categories according to sign
+    mutate(data_cat = map(.x = data_vec,
+                          ~ ifelse(.x < 0,
+                                   yes = 'negative',
+                                   no = ifelse(.x > 0,
+                                               yes = 'positive',
+                                               no = 'zero')))) %>% 
+    # Count the number of positive and negative ratings
+    ## positive numbers arbitrarily listed first == 'success'
+    mutate(success_count = map(.x = data_cat,
+                           ~ c(length(.x[.x == 'positive']), 
+                               length(.x[.x == 'negative'])))) %>% 
+    # Conduct binomial test (two-sided)
+    mutate(binomial_test = map2(.x = success_count,
+                                .y = prob,
+                                ~ binom.test(x = .x, 
+                                             p = .y))) %>% 
+    # Extract p-value from binomial_test
+    mutate(binomial_p.value = map(.x = binomial_test,
+                                 ~ .x$p.value %>% 
+                                     round(., 3))) %>% 
+    # Categorise p-value using a p < 0.05 threshold
+    ## No correction for multiple comparisons 
+    ## (too conservative for explorartory analysis)
+    mutate(binomial_p.interpretation = map(.x = binomial_p.value,
+                                           ~ ifelse(.x < 0.05,
+                                                    yes = 'significant',
+                                                    no = 'not significant')))
+
+# Plot
+data_0.8 %>% 
+    # Select data columns
+    select(PID, intensity, binomial_p.interpretation) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Recode binomial_p.interpretation
+    mutate(binomial_p.interpretation = 
+               ifelse(binomial_p.interpretation == 'significant',
+                      yes = 'Yes',
+                      no = 'No')) %>% 
+    # Join with original data
+    right_join(data) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    # Plot
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating) +
+    geom_hline(yintercept = 0) +
+    geom_point(aes(fill = binomial_p.interpretation),
+               colour = '#000000',
+               shape = 21,
+               size = 3,
+               alpha = 0.7) + 
+    labs(title = "Probability of 'success' from 0.5 to 0.8: Binomial test of positive/negative rating distribution",
+         subtitle = '(alpha = 0.05 | two-tailed p-value)',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating') +
+    scale_x_discrete(breaks = seq(1, 4, by = 0.5),
+                     labels = sprintf('%.2f', seq(1, 4, by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50)) +
+    scale_fill_viridis_d(name = 'Deviates significantly: ',
+                         option = 'C') +
+    scale_colour_viridis_d(name = 'Deviates from expected: ',
+                           option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90, 
+                                     hjust = 0, 
+                                     vjust = 0.5))
+
+#-- Probability of success: linear increase from 0.5 to 0.95 --#
+
+# Generate plot data
+data_0.95 <- data_nest %>% 
+    # Add probability of success column
+    mutate(prob = case_when(
+        intensity == 1.00 ~ prob_data$`4. p=0.5 to p=0.95`[[1]],
+        intensity == 1.25 ~ prob_data$`4. p=0.5 to p=0.95`[[2]],
+        intensity == 1.50 ~ prob_data$`4. p=0.5 to p=0.95`[[3]],
+        intensity == 1.75 ~ prob_data$`4. p=0.5 to p=0.95`[[4]],
+        intensity == 2.00 ~ prob_data$`4. p=0.5 to p=0.95`[[5]],
+        intensity == 2.25 ~ prob_data$`4. p=0.5 to p=0.95`[[6]],
+        intensity == 2.50 ~ prob_data$`4. p=0.5 to p=0.95`[[7]],
+        intensity == 2.75 ~ prob_data$`4. p=0.5 to p=0.95`[[8]],
+        intensity == 3.00 ~ prob_data$`4. p=0.5 to p=0.95`[[9]],
+        intensity == 3.25 ~ prob_data$`4. p=0.5 to p=0.95`[[10]],
+        intensity == 3.50 ~ prob_data$`4. p=0.5 to p=0.95`[[11]],
+        intensity == 3.75 ~ prob_data$`4. p=0.5 to p=0.95`[[12]],
+        intensity == 4.00 ~ prob_data$`4. p=0.5 to p=0.95`[[13]]
+    )) %>% 
+    # Extract rating data from dataframe
+    mutate(data_vec = map(.x = data,
+                          ~ .$rating)) %>% 
+    # Recode rating data as categories according to sign
+    mutate(data_cat = map(.x = data_vec,
+                          ~ ifelse(.x < 0,
+                                   yes = 'negative',
+                                   no = ifelse(.x > 0,
+                                               yes = 'positive',
+                                               no = 'zero')))) %>% 
+    # Count the number of positive and negative ratings
+    ## positive numbers arbitrarily listed first == 'success'
+    mutate(success_count = map(.x = data_cat,
+                           ~ c(length(.x[.x == 'positive']), 
+                               length(.x[.x == 'negative'])))) %>% 
+    # Conduct binomial test (two-sided)
+    mutate(binomial_test = map2(.x = success_count,
+                                .y = prob,
+                                ~ binom.test(x = .x, 
+                                             p = .y))) %>% 
+    # Extract p-value from binomial_test
+    mutate(binomial_p.value = map(.x = binomial_test,
+                                 ~ .x$p.value %>% 
+                                     round(., 3))) %>% 
+    # Categorise p-value using a p < 0.05 threshold
+    ## No correction for multiple comparisons 
+    ## (too conservative for explorartory analysis)
+    mutate(binomial_p.interpretation = map(.x = binomial_p.value,
+                                           ~ ifelse(.x < 0.05,
+                                                    yes = 'significant',
+                                                    no = 'not significant')))
+
+# Plot
+data_0.95 %>% 
+    # Select data columns
+    select(PID, intensity, binomial_p.interpretation) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Recode binomial_p.interpretation
+    mutate(binomial_p.interpretation = 
+               ifelse(binomial_p.interpretation == 'significant',
+                      yes = 'Yes',
+                      no = 'No')) %>% 
+    # Join with original data
+    right_join(data) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    # Plot
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating) +
+    geom_hline(yintercept = 0) +
+    geom_point(aes(fill = binomial_p.interpretation),
+               colour = '#000000',
+               shape = 21,
+               size = 3,
+               alpha = 0.7) + 
+    labs(title = "Probability of 'success' from 0.5 to 0.95: Binomial test of positive/negative rating distribution",
+         subtitle = '(alpha = 0.05 | two-tailed p-value)',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating') +
+    scale_x_discrete(breaks = seq(1, 4, by = 0.5),
+                     labels = sprintf('%.2f', seq(1, 4, by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50)) +
+    scale_fill_viridis_d(name = 'Deviates significantly: ',
+                         option = 'C') +
+    scale_colour_viridis_d(name = 'Deviates from expected: ',
+                           option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90, 
+                                     hjust = 0, 
+                                     vjust = 0.5))
+```
+
+----
+
+## Session information
+
+```{r session_info}
+sessionInfo()
+```
