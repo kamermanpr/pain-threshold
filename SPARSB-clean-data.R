@@ -78,8 +78,8 @@ data %<>% mutate(rating = ifelse(scale == 'SRS',
 
 # Create columns of SPARS-equivalent values for NRS (0 to 50) and SRS (-50 to 0)
 data %<>% mutate(rating_eq = ifelse(scale != 'SPARS',
-                                    yes = rating,
-                                    no = rating / 2))
+                                    yes = rating / 2,
+                                    no = rating))
 
 # Create a labeling column with NRS and SRS combined into a single scale
 data %<>% mutate(scale_combined = ifelse(scale == 'SPARS',
