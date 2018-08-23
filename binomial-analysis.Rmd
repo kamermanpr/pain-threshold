@@ -1,5 +1,6 @@
 ---
-title: 'Binomial probability'
+title: "Binomial test analyses"
+subtitle: "Does the distribution of ratings differ from a theoretical 'NULL' distribution?"
 author: "Peter Kamerman and Tory Madden"
 date: "`r format(Sys.Date(), '%d %b %Y')`"
 output: 
@@ -31,10 +32,22 @@ knitr::opts_chunk$set(warning = FALSE,
 
 ----
 
-## Question
-For each stimulus intenisty, what is the probability that the set of 12 repeated stimuli include zero?
+# Introduction
 
-To assess the probability, we modelled the data using the binomial test with a 50% probability of _'success'_ (positive rating arbitrarily chosen as success) at each stimulus intensity for each participant. Significance was assessed at the $\alpha$ = 0.05 level, using a two-tailed probability. 
+## Question
+For each participant, and at each stimulus intensity, does the distribution of SPARS/NRS ratings differ significantly from a theoretical 'NULL' distribution?
+
+## Methodology
+
+We used the binomial test to assess this question. The binomial test is an exact test of the statistical significance of deviations from a theoretically expected distribution of observations into two categories. As such, using the test required that we dichotomize the continuous rating data we collected. 
+
+The SPARS ranges from -50 ('no sensation') to +50 ('most intense pain you can imagine'), and therefore ratings can span 0 (pain threshold, 'the exact point at which you feel transitions to pain'). We therefore coded SPARS ratings < 0 as being **'negative'**, and ratings > 0 as being **'positive'**. In the first SPARS experiment (SPARS A), participants were not allowed to record a stimulus as 0 , but in the second SPARS experiment (SPARS B), they could record stimuli as 0 on the scale. We felt that the 0 ratings in the SPARS B experiment were uninformative, and so we excluded ratings of 0 from the analysis. 
+
+The NRS ranges from 0 ('no pain') to 100 ('most intense pain you can imagine'), and therefore ratings immediately to the right of the 0-point of the scale mark the transition from non-painful to painful sensation. We therefore coded NRS ratings = 0 as being **'negative'**, and ratings > 0 as being **'positive'**. In addition, it has been reported that individuals use the first 15 points of a 0 to 100 NRS to record non-painful stimuli (NEEDS A REFERENCE), and so we also analysed the NRS data with NRS ratings $\leq$ 15 as being **'negative'**, and ratings >15 as being **'positive'**. 
+
+In all cases, we modelled the data using the binomial test with a 50% probability of 'success' (positive rating arbitrarily chosen as success). This is a conservative approach as one would expect that for the SPARS and the NRS, as stimulus intensity increases above pain threshold, the probability of recording a 'positive' rating increases. Similarly, in the case of the SPARS (which allows the rating of intensity of noxious and non-noxious stimuli), one would expect that the probability of recording a 'negative' rating would increase. However, since we did not know the approximate intensity of a theshold stimulus, and there was high inter-individual variation in sensitivity, we were unable to gage at which stimulus intensities we should start shifting the probability of 'success' away from 50%. 
+
+Because ratings on the SPARS can range from -50 to +50, we analysed the data using a two-tailed p-value. That is, the distribution may shift to the left or right of the theoretical distribution. However, because the NRS has a floor rating of 0 ('no pain'), the change in rating from 0 is unidirectional (> 0), so we performed the binomial test with a one-tailed p-value. For all test, significance was assessed at the $\alpha$ = 0.05 level. And, because this was an exploratory analysis, we did not make any family-wide corrections for multiple comparisons. 
 
 ----
 
