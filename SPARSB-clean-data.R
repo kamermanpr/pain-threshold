@@ -76,34 +76,14 @@ data %<>% mutate(rating = ifelse(scale == 'SRS',
                                  yes = rating - 100,
                                  no = rating))
 
-# Create columns of SPARS-equivalent values for NRS (0 to 50) and SRS (-50 to 0)
-data %<>% mutate(rating_eq = ifelse(scale != 'SPARS',
-                                    yes = rating / 2,
-                                    no = rating))
-
-# Create a labeling column with NRS and SRS combined into a single scale
-data %<>% mutate(scale_combined = ifelse(scale == 'SPARS',
-                                         yes = scale,
-                                         no = 'COMBINED'))
-
-# Center and scale rating data for each scale
-data %<>% group_by(scale) %>%
-  mutate(rating_z = scale(rating))
-
 # Rebase block_number to start at 1 and increase monotically
 data %<>% group_by(PID) %>%
   arrange(block, trial_number) %>%
   mutate(block = dense_rank(block))
 
-# Recode intensities on ordinal scale (within participant)
-data %<>% group_by(PID) %>%
-  mutate(intensity_rank = dense_rank(intensity))
-
 # Ungroup and order columns
 data %<>% ungroup() %>%
-    select(PID, block, trial_number, intensity, intensity_rank,
-           scale, scale_combined,
-           rating, rating_eq, rating_z)
+    select(PID, block, trial_number, scale, intensity, rating)
 
 # Save outputs
 write_rds(x = data,
