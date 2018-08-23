@@ -17,23 +17,14 @@ data <- map(.x = 1:19,
   map_df(~tbl_df(.))
 
 # Clean data
-## Rename select columns
 data %<>%
-  rename(PID = Subject,
-         trial_number = `Trial number`,
-         intensity = Intensity, # Laser stimulus
-         rating = Rating, # SPARS rating
-         EDA = `CDA.SCR [muS]`, # Electrodermal reaction
-         panas_positive = PA, # Positive and Negative Affect Schedule (PANAS)
-         panas_negative = `NA`, # PANAS
-         age = Age, # Years
-         sex = Gender, # Male = 1, Female = 2
-         dass42_anxiety = Anxiety, # Depression, Anxiety and Stress Scales (DASS-42)
-         dass42_depression = Depr, # DASS-42
-         dass42_stress = Stress, # DASS-42
-         pcs_magnification = Magnif, # Pain Catastrophizing Scale (PCS)
-         pcs_rumination = Rumin, # PCS
-         pcs_helplessness = Helplessn) # PCS
+    # Select columns
+    select(Subject, `Trial number`, Intensity, Rating) %>%
+    # Rename columns
+    rename(PID = Subject,
+           trial_number = `Trial number`,
+           intensity = Intensity, # Laser stimulus intensity
+           rating = Rating) # SPARS rating
 
 ## Add block_order
 data %<>%
@@ -92,20 +83,9 @@ data %<>%
     TRUE ~ 'Other'
   ))
 
-## Make intensity class character
-data %<>%
-  mutate(intensity_char = sprintf('%.2f', intensity))
-
-## Converted SPARS to a 0-100 positive scale
-data %<>%
-  mutate(rating_positive = rating + 50)
-
 ## Select required columns
 data %<>%
-  select(PID, block, block_order, trial_number, intensity, intensity_char,
-         rating, rating_positive, EDA, age, sex, panas_positive, panas_negative,
-         dass42_depression, dass42_anxiety, dass42_stress, pcs_magnification,
-         pcs_rumination, pcs_helplessness)
+  select(PID, block, block_order, trial_number, intensity, rating)
 
 # Save outputs
 write_rds(x = data,
