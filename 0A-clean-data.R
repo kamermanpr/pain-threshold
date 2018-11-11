@@ -10,15 +10,16 @@ library(tidyverse)
 library(readxl)
 
 # Import data
+path <- 'data-original/SPARS_A/raw-data-18112016-deidentified.xlsx'
 data <- map(.x = 1:19,
-            ~read_xlsx(path = 'original-data/SPARS_A/raw-data-18112016-deidentified.xlsx',
+            ~read_xlsx(path = path,
                        sheet = .x,
                        col_names = TRUE)) %>%
     map_df(~tbl_df(.))
 
 # Clean data
 data %<>%
-    # Select columns
+    # Select required columns
     select(Subject,
            `Trial number`,
            Intensity,
@@ -29,22 +30,25 @@ data %<>%
            intensity = Intensity, # Laser stimulus intensity
            rating = Rating) # SPARS rating
 
-## Fix trial number issues for the following:
+## Fix trial numbering issues (accounting for 'missed' readings):
 ## ID05
 trial_n <- c(1:24, 27:45, 53:66, 79:95)
 ID05 <- data %>%
     filter(PID == 'ID05') %>%
     mutate(trial_number = trial_n)
+
 ## ID06
 trial_n <- c(1:25, 27:51, 53:77, 79:101)
 ID06 <- data %>%
     filter(PID == 'ID06') %>%
     mutate(trial_number = trial_n)
+
 ## ID12
 trial_n <- c(1:23, 27:51, 53:73, 79:100)
 ID12 <- data %>%
     filter(PID == 'ID12') %>%
     mutate(trial_number = trial_n)
+
 ## ID15
 trial_n <- 1:104
 ID15 <- data %>%
@@ -166,7 +170,8 @@ data %<>%
 
 # Save outputs
 write_rds(x = data,
-          path = 'cleaned-data/SPARS_A.rds')
+          path = 'data-cleaned/SPARS_A.rds')
+
 write_csv(x = data,
-          path = 'cleaned-data/SPARS_A.csv')
+          path = 'data-cleaned/SPARS_A.csv')
 

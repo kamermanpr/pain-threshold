@@ -10,7 +10,7 @@ library(tidyverse)
 
 # Import data and add column
 ## Get a list of files in 'orignal-data' directory
-file_names <- list.files(path = "original-data/SPARS_B/",
+file_names <- list.files(path = "data-original/SPARS_B/",
                          pattern = "*.txt")
 
 ## Generate a list of imported dataframes
@@ -94,6 +94,7 @@ data %<>% ungroup() %>%
 
 # Save outputs
 write_rds(x = data,
-          path = 'cleaned-data/SPARS_B.rds')
+          path = 'data-cleaned/SPARS_B.rds')
+
 write_csv(x = data,
-          path = 'cleaned-data/SPARS_B.csv')
+          path = 'data-cleaned/SPARS_B.csv')
