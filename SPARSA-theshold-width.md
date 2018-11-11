@@ -334,7 +334,8 @@ ggplot(data = data_boot_group) +
                       ymin = lower_ci,
                       ymax = upper_ci,
                       fill = fill)) +
-    geom_hline(yintercept = 0) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
     scale_fill_manual(values = c('#666666', '#FFFFFF')) +
     scale_y_continuous(limits = c(-50, 50),
                        breaks = c(-50, -25, 0, 25, 50),
@@ -358,6 +359,7 @@ ggplot(data = data_boot_group) +
 ----
 
 # Session information
+
 
 ```r
 sessionInfo()
