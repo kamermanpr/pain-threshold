@@ -381,9 +381,10 @@ sessionInfo()
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] bindrcpp_0.2.2  boot_1.3-20     magrittr_1.5    forcats_0.3.0  
-##  [5] stringr_1.3.1   dplyr_0.7.7     purrr_0.2.5     readr_1.1.1    
-##  [9] tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
+##  [1] bindrcpp_0.2.2  skimr_1.0.3     boot_1.3-20     magrittr_1.5   
+##  [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.7     purrr_0.2.5    
+##  [9] readr_1.1.1     tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0  
+## [13] tidyverse_1.2.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
@@ -394,8 +395,7 @@ sessionInfo()
 ## [21] withr_2.1.2.9000 xml2_1.2.0       httr_1.3.1       knitr_1.20      
 ## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
 ## [29] glue_1.3.0       R6_2.3.0         readxl_1.1.0     rmarkdown_1.10  
-## [33] modelr_0.1.2     codetools_0.2-15 backports_1.1.2  scales_1.0.0    
-## [37] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2
-## [41] stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0     
-## [45] crayon_1.3.4
+## [33] modelr_0.1.2     backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
+## [37] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 stringi_1.2.4   
+## [41] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4
 ```
