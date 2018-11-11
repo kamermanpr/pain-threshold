@@ -189,6 +189,12 @@ ggplot(data = data) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
           axis.text.x = element_text(angle = -90))
 ```
 
@@ -223,6 +229,12 @@ ggplot(data = data_boot) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
           axis.text.x = element_text(angle = -90))
 ```
 
