@@ -345,10 +345,7 @@ ggplot(data = data_spars) +
                        breaks = c(-50, -25, 0, 25, 50)) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
-                                    by = 1),
-                       labels = sprintf('%0.2f', round(seq(from = 1, 
-                                                      to = 9,
-                                                      by = 1), 2))) +
+                                    by = 1)) +
     facet_wrap(~ PID, ncol = 3) +
     labs(title = "SPARS individuals: Scatter plots of ratings at each stimulus intensity",
          subtitle = '- Dashed line: pain threshold\n- Colour gradient: stimulus intensity',
@@ -356,7 +353,12 @@ ggplot(data = data_spars) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
-          axis.text.x = element_text(angle = -90))
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/spars_scatter-1.png" width="864" style="display: block; margin: auto;" />
@@ -386,7 +388,13 @@ ggplot(data = data_nrs) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'NRS rating (0, 100)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/nrs_scatter-1.png" width="864" style="display: block; margin: auto;" />
@@ -416,7 +424,13 @@ ggplot(data = data_srs) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SRS rating (-100, 0)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/srs_scatter-1.png" width="864" style="display: block; margin: auto;" />
@@ -441,13 +455,19 @@ ggplot(data = spars_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "SPARS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/spars_ci-1.png" width="864" style="display: block; margin: auto;" />
@@ -470,13 +490,19 @@ ggplot(data = nrs_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "NRS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'NRS rating (0, 100)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/nrs_ci-1.png" width="864" style="display: block; margin: auto;" />
@@ -499,13 +525,19 @@ ggplot(data = srs_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "SRS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SRS rating (-100, 0)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 <img src="./figures/SPARSB_plots/srs_ci-1.png" width="864" style="display: block; margin: auto;" />

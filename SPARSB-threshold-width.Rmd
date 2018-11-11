@@ -311,7 +311,7 @@ srs_boot %<>%
 ### Scatter plots
 
 #### SPARS
-```{r spars_scatter, fig.width = 9, fig.height = 10.4}
+```{r spars_scatter, fig.width = 9, fig.height = 10}
 # Plot scatter plot of ratings for each individual at every intensity
 ggplot(data = data_spars) +
     aes(x = intensity,
@@ -327,10 +327,7 @@ ggplot(data = data_spars) +
                        breaks = c(-50, -25, 0, 25, 50)) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
-                                    by = 1),
-                       labels = sprintf('%0.2f', round(seq(from = 1, 
-                                                      to = 9,
-                                                      by = 1), 2))) +
+                                    by = 1)) +
     facet_wrap(~ PID, ncol = 3) +
     labs(title = "SPARS individuals: Scatter plots of ratings at each stimulus intensity",
          subtitle = '- Dashed line: pain threshold\n- Colour gradient: stimulus intensity',
@@ -343,12 +340,11 @@ ggplot(data = data_spars) +
                                                     b = 0.1, 
                                                     r = 1, 
                                                     l = 1, 
-                                                    'lines')),
-          axis.text.x = element_text(angle = -90))
+                                                    'lines')))
 ```
 
 #### NRS
-```{r nrs_scatter, fig.width = 9, fig.height = 10.4}
+```{r nrs_scatter, fig.width = 9, fig.height = 10}
 # Plot scatter plot of ratings for each individual at every intensity
 ggplot(data = data_nrs) +
     aes(x = intensity,
@@ -381,7 +377,7 @@ ggplot(data = data_nrs) +
 ```
 
 #### SRS
-```{r srs_scatter, fig.width = 9, fig.height = 10.4}
+```{r srs_scatter, fig.width = 9, fig.height = 7}
 # Plot scatter plot of ratings for each individual at every intensity
 ggplot(data = data_srs) +
     aes(x = intensity,
@@ -416,7 +412,7 @@ ggplot(data = data_srs) +
 ### Trimean confidence interval plots
 
 #### SPARS
-```{r spars_ci, fig.width = 9, fig.height = 10.4}
+```{r spars_ci, fig.width = 9, fig.height = 10}
 # Plot individual CIs at every intensity
 ggplot(data = spars_boot) +
     aes(x = intensity,
@@ -432,7 +428,7 @@ ggplot(data = spars_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "SPARS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
@@ -448,7 +444,7 @@ ggplot(data = spars_boot) +
 ```
 
 #### NRS
-```{r nrs_ci, fig.width = 9, fig.height = 10.4}
+```{r nrs_ci, fig.width = 9, fig.height = 10}
 # Plot individual CIs at every intensity
 ggplot(data = nrs_boot) +
     aes(x = intensity,
@@ -464,7 +460,7 @@ ggplot(data = nrs_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "NRS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
@@ -480,7 +476,7 @@ ggplot(data = nrs_boot) +
 ```
 
 #### SRS
-```{r srs_ci, fig.width = 9, fig.height = 10.4}
+```{r srs_ci, fig.width = 9, fig.height = 7}
 # Plot individual CIs at every intensity
 ggplot(data = srs_boot) +
     aes(x = intensity,
@@ -496,7 +492,7 @@ ggplot(data = srs_boot) +
     scale_x_continuous(breaks = seq(from = 1, 
                                     to = 9,
                                     by = 1)) +
-    facet_wrap(~ PID, ncol = 4) +
+    facet_wrap(~ PID, ncol = 3) +
     labs(title = "SRS individuals: Crossbar plots of 95% CI of Tukey trimeans\nfor SPARS ratings at each stimulus intensity",
          subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
          x = 'Rank stimulus intensity (0.25J increments)',
