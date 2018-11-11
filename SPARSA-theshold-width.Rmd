@@ -1,15 +1,8 @@
 ---
-title: "SPARS_A: Width of pain threshold"
+title: "Supplement 1"
+subtitle: "SPARS A: Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
 date: "`r format(Sys.Date(), '%d %b %Y')`"
-output: 
-  html_document:
-    theme: yeti
-    hightlight: pygments
-    toc: true
-    toc_depth: 5
-    toc_float: true
-    code_folding: show
 ---
 
 ```{r setup, include = FALSE}
@@ -17,16 +10,16 @@ output:
 library(tidyverse)
 library(magrittr)
 library(boot)
+library(skimr)
 
 # Set ggplot theme
-theme_set(new = theme_bw())
+theme_set(new = theme_bw(base_size = 12))
 
 # knitr setup
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      fig.height = 8,
-                      fig.width = 8,
                       fig.align = 'center',
+                      fig.retina = 2,
                       fig.path = './figures/SPARSA_plots/',
                       cache = TRUE)
 ```
@@ -34,9 +27,40 @@ knitr::opts_chunk$set(warning = FALSE,
 ----
 
 # Question
-How wide is the pain threshold on the SPARS_A data?
+How wide is the pain threshold for participants taking part in the SPARS A trial?
 
-Here, we calculated the median and bootstrapped CI for each individual, at each intensity rank. Next, we plotted those statistics to show how many of each individual's CIs crossed zero. We also repeated the process with group-level data, not grouping by individual.
+To answer the question, we calculated the _Tukey Trimean_ and bootstrapped 95% confidence interval (CI) for each individual, at each stimulus intensity. Next, we plotted these statistics to show the stimulus range over which each individual's CIs included zero on the SPARS (pain threshold). 
+
+To get an idea of the width of the stimulus range that included zero on the SPARS at the group level, we calculated the _Tukey trimean_ for each individual, at each stimulus intensity, and then calculated the mean and bootstrapped 95% CI for the group at each stimulus intensity. These data were then plotted to show the stimulus range over which the group's CIs included zero (pain threshold).
+
+The selection of the _tukey trimean_ as the measure of central tendancy at the individual level was based on the analysis of central tendancy reported in the original description of the SPARS ([Supplement_3.pdf](https://doi.org/10.6084/m9.figshare.6561743)). The _Tukey trimean_ is defined as the weighted average of the distribution's median and its two quartiles, and is a robust measure of central tendancy that unlike a median, takes the spread of the data into account. 
+
+$$ T_{mean} = \frac{1}{2}(Q_2 + \frac{Q_1 + Q_3}{2}) $$
+
+Where:
+
+- $Q_1$ = 25^th^ percentile  
+- $Q_2$ = 50^th^ percentile (median)  
+- $Q_3$ = 75^th^ percentile
+
+```{r trimean_function}
+# Define the tri_mean function
+tri_mean <- function(x) {
+    # Calculate quantiles
+    q1 <- quantile(x, probs = 0.25, na.rm = TRUE)[[1]]
+    q2 <- median(x, na.rm = TRUE)
+    q3 <- quantile(x, probs = 0.75, na.rm = TRUE)[[1]]
+    # Calculate trimean
+    tri_mean <- (q2 + ((q1 + q3) / 2)) / 2
+    # Round to a whole number
+    tri_mean <- round(tri_mean)
+    return(tri_mean)
+}
+```
+
+**Note:** No inspection of block and stimulus order effects were undertaken because  analysis of these factors in the  original description of the SPARS revealed no order effects ([Supplement_4.pdf](https://doi.org/10.6084/m9.figshare.6561743)).
+
+The experimental protocol called for participants to be exposed to 13 stimuli, evenly spaced at 0.25J intervals over the range 1.00J to 4.00J. Each stimulus intensity was applied 8 times, giving a total of 104 exposures (trials). To prevent learning effects, the 104 trials were randomised across 4 experimental blocks (26 trials per block).
 
 ----
 
@@ -44,46 +68,53 @@ Here, we calculated the median and bootstrapped CI for each individual, at each 
 
 ```{r import}
 # Import
-data <- read_rds('cleaned-data/SPARS_A.rds')
+data <- read_rds('data-cleaned/SPARS_A.rds')
 
 # Inspect
 glimpse(data)
+data %>% 
+    select(intensity, rating) %>% 
+    skim()
 ```
 
 ----
 
-# Bootstrapping procedure
+# Data at the level of the individual
+
+## Bootstrapping procedure
 
 ```{r bootstrap_indiv}
-# Nest in preparation for bootstrapping
+# Nest data in preparation for bootstrapping at each stimulus intensity
 data_boot <- data %>%
-  group_by(PID, intensity) %>%
-  nest()
+    group_by(PID, intensity) %>%
+    nest()
 
 # Define bootstrap function
-boot_median <- function(d,i){
-  median(d[i], na.rm = TRUE)
+boot_tri_mean <- function(d,i){
+    tri_mean(d[i])
 }
 
 # Perform bootstrap
+set.seed(123456789)
 data_boot %<>% 
-    mutate(boot = map(.x = data, 
-                      ~ boot(data = .x$rating, 
-                             statistic = boot_median, 
-                             R = 1999,
-                             stype = 'i')))
+        mutate(boot = map(.x = data, 
+                          ~ boot(data = .x$rating, 
+                                 statistic = boot_tri_mean, 
+                                 R = 10000, # For small sample size
+                                 stype = 'i')))
 
-# Remove NULL bootstrap row 56 (ID05)
+# Remove NULL bootstrap row 56 (ID05, only one value = 20)
 data_boot <- data_boot[-56, ]
 
+# Extract CI from boot object
 data_boot %<>% 
     mutate(boot_ci = map(.x = boot,
                          ~ boot.ci(.x,
                                    type = 'basic')))
 
-# Extract the data, giving original median and bootstrapped CI
+# Extract the data, giving original trimean and bootstrapped CI
 data_boot %<>% 
-    mutate(median = map_dbl(.x = boot_ci,
+    mutate(tri_mean = map_dbl(.x = boot_ci,
                             ~ .x$t0),
            lower_ci = map_dbl(.x = boot_ci,
                               ~ .x$basic[[4]]),
@@ -94,7 +125,7 @@ data_boot %<>%
 data_boot %<>% 
     select(-data, -boot, -boot_ci)
 
-# Clean impossible ratings
+# Clip CI intervals (SPARS ranges from -50 to 50)
 data_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 50,
                              yes = 50,
@@ -102,81 +133,205 @@ data_boot %<>%
          lower_ci = ifelse(lower_ci < -50,
                            yes = -50,
                            no = lower_ci)) 
+
+# Add fill column for plot
+data_boot %<>%
+    mutate(fill = ifelse(upper_ci >= 0 & lower_ci <= 0,
+                         yes = 'inclusive',
+                         no = 'exclusive'),
+           fill = factor(fill, 
+                         levels = c('inclusive', 'exclusive'),
+                         ordered = TRUE))
 ```
 
-# Plots at individual level
+## Plots
 
-```{r plots_indiv}
+### Scatter plots
+```{r indiv_scatter, fig.width = 9, fig.height = 10.4}
+# Plot scatter plot of ratings for each individual at every intensity
+ggplot(data = data) +
+    aes(x = intensity,
+        y = rating,
+        fill = intensity) +
+    geom_hline(yintercept = 0, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) +
+    scale_fill_gradient(low = '#FFFFFF', high = '#323232') +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50)) +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 4,
+                                    by = 0.25),
+                       labels = sprintf('%0.2f', round(seq(from = 1, 
+                                                      to = 4,
+                                                      by = 0.25), 2))) +
+    facet_wrap(~ PID, ncol = 4) +
+    labs(title = "Individuals: Scatter plots of SPARS ratings at each stimulus intensity",
+         subtitle = '- Dashed line: pain threshold\n- Colour gradient: stimulus intensity',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    theme(legend.position = 'none',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90))
+```
+
+### Trimean confidence interval plots
+```{r indiv_ci, fig.width = 9, fig.height = 10.4}
 # Plot individual CIs at every intensity
 ggplot(data = data_boot) +
-  aes(x = as.factor(intensity)) +
-  geom_crossbar(aes(y = median,
-                    ymin = lower_ci,
-                    ymax = upper_ci)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~ PID, nrow = 3) +
-  labs(title = "Bootstrapped 95% CI for each participant's median SPARS rating at each intensity")
+    aes(x = intensity,
+        fill = fill) +
+    geom_hline(yintercept = 0, 
+               linetype = 2) +
+    geom_crossbar(aes(y = tri_mean,
+                      ymin = lower_ci,
+                      ymax = upper_ci)) +
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 4,
+                                    by = 0.25),
+                       labels = sprintf('%0.2f', round(seq(from = 1, 
+                                                      to = 4,
+                                                      by = 0.25), 2))) +
+    facet_wrap(~ PID, ncol = 4) +
+    labs(title = "Individuals: Crossbar plots of 95% CI of Tukey trimeans for SPARS ratings\nat each stimulus intensity",
+         subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    theme(legend.position = 'none',
+          panel.grid = element_blank(),
+          axis.text.x = element_text(angle = -90))
 ```
 
+----
+
+# Data at the level of the group
+
+## Bootstrapping procedure
 ```{r bootstrap_group}
-# Nest in preparation for bootstrapping
-df_boot_group_SPARS <- df %>%
-  group_by(intensity) %>%
-  nest()
+# Calculate individual trimeans at each stimulus intensity
+data_group <- data %>% 
+    group_by(PID, intensity) %>% 
+    summarise(tri_mean = tri_mean(rating)) %>% 
+    ungroup()
 
-# Bootstrap function
+# Nest data in preparation for bootstrapping at each stimulus intensity
+data_boot_group <- data_group %>%
+    group_by(intensity) %>%
+    nest()
 
-boot_median_SPARS <- function(d,i){
-  median(d[i])
-}
+# Perform bootstrap
+set.seed(987654321)
+data_boot_group %<>% mutate(boot = map(.x = data, 
+                                       ~ boot(data = .x$tri_mean, 
+                                              statistic = boot_tri_mean, 
+                                              R = 10000, # For small sample size
+                                              stype = 'i')))
 
-# Make bootstrap
-
-df_boot_group_SPARS %<>% mutate(boot = map(.x = data, 
-                               ~ boot(data = .x$rating, 
-                                      statistic = boot_median_SPARS, 
-                                      R = 10000,
-                                      stype = 'i')))
-
-df_boot_group_SPARS %<>% mutate(boot_ci = map(.x = boot,
-                                  ~ boot.ci(.x,
-                                            type = 'basic')))
+# Extract CI from boot object
+data_boot_group %<>% mutate(boot_ci = map(.x = boot,
+                                          ~ boot.ci(.x,
+                                                    type = 'basic')))
 
 # Extract the data, giving original median and bootstrapped CI
-
-df_boot_group_SPARS %<>% mutate(median = map(.x = boot_ci,
-                                 ~ .x$t0),
-                    lower_ci = map(.x = boot_ci,
-                                   ~ .x$basic[[4]]),
-                    upper_ci = map(.x = boot_ci,
-                                   ~ .x$basic[[5]]))
+data_boot_group %<>% mutate(tri_mean = map(.x = boot_ci,
+                                           ~ .x$t0),
+                            lower_ci = map(.x = boot_ci,
+                                           ~ .x$basic[[4]]),
+                            upper_ci = map(.x = boot_ci,
+                                           ~ .x$basic[[5]]))
 
 # Delete unwanted columns
+data_boot_group %<>% select(-data, -boot, -boot_ci) %>%
+    unnest()
 
-df_boot_group_SPARS %<>% select (-data, -boot, -boot_ci) %>%
-  unnest()
+# Clip CI intervals (SPARS ranges from -50 to 50)
+data_boot_group %<>%
+    mutate(upper_ci = ifelse(upper_ci > 50,
+                             yes = 50,
+                             no = upper_ci),
+           lower_ci = ifelse(lower_ci < -50,
+                             yes = -50,
+                             no = lower_ci)) 
+
+# Add fill column for plot
+data_boot_group %<>%
+    mutate(fill = ifelse(upper_ci >= 0 & lower_ci <= 0,
+                         yes = 'inclusive',
+                         no = 'exclusive'),
+           fill = factor(fill, 
+                         levels = c('inclusive', 'exclusive'),
+                         ordered = TRUE))
 ```
 
-# Plots at group level
+## Plots
 
-```{r plots_group}
+### Scatter plots
+```{r group_scatter, fig.width = 7, fig.height = 7}
+# Plot scatter plot of ratings for the group at every intensity
+ggplot(data = data_group) +
+    aes(x = intensity,
+        y = tri_mean,
+        fill = intensity) +
+    geom_hline(yintercept = 0, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) +
+    scale_fill_gradient(low = '#FFFFFF', high = '#323232') +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50)) +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 4,
+                                    by = 0.25),
+                       labels = sprintf('%0.2f', round(seq(from = 1, 
+                                                      to = 4,
+                                                      by = 0.25), 2))) +
+    labs(title = "Group: Scatter plots of SPARS Tukey trimean ratings\nat each stimulus intensity",
+         subtitle = '- Dashed line: pain threshold\n- Colour gradient: stimulus intensity',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    theme(legend.position = 'none',
+          panel.grid = element_blank())
+```
 
+### Trimean confidence interval plots
+```{r group_ci, fig.width = 7, fig.height = 7}
 # Plot group CIs at every intensity
-
-ggplot(data = df_boot_group_SPARS) +
-  aes(x = as.factor(intensity)) +
-  geom_crossbar(aes(y = median,
-                    ymin = lower_ci,
-                    ymax = upper_ci)) +
-  geom_hline(yintercept = 0) +
-  labs(title = "Bootstrapped 95% CI for group median SPARS ratings at each intensity rank")
+ggplot(data = data_boot_group) +
+    aes(x = intensity) +
+    geom_crossbar(aes(y = tri_mean,
+                      ymin = lower_ci,
+                      ymax = upper_ci,
+                      fill = fill)) +
+    geom_hline(yintercept = 0) +
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 4,
+                                    by = 0.25),
+                       labels = sprintf('%0.2f', round(seq(from = 1, 
+                                                      to = 4,
+                                                      by = 0.25), 2))) +
+    labs(title = "Group: Crossbar plots of 95% CI of Tukey trimeans for SPARS ratings\nat each stimulus intensity",
+         subtitle = '- Basic bootstrap 95% CI with 10,000 resamples\n- Dashed line: pain threshold | - Grey fill: 95% CI includes zero',
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    theme(legend.position = 'none',
+          panel.grid = element_blank())
 ```
 
-# Conclusion
+----
 
-On the SPARS scale, with these data, between 2 and 9 of 13 different intensities of laser stimulation lay over the pain threshold for 19 participants, as indicated by the bootstrapped 95% confidence interval for the median SPARS rating crossing zero.  At the group level, 4 of 13 intensities of laser stimulation lay over the pain threshold.
+# Session information
 
-## Session information
 ```{r session_info}
 sessionInfo()
 ```
