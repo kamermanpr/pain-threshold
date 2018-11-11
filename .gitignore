@@ -8,5 +8,7 @@
 *.csv
 *.rds
 *.xlsx
+*.html
 .dropbox
 Icon?
+.Rapp.history

@@ -1,24 +1,25 @@
 ############################################################
 #                                                          #
-#             Clean and tidy SPARS_B dataset               #
+#                    Clean SPARS B data                    #
 #                                                          #
 ############################################################
+
 # Load packages
 library(magrittr)
 library(tidyverse)
 
 # Import data and add column
 ## Get a list of files in 'orignal-data' directory
-file_names <- list.files(path = "./original-data/SPARS_B/",
+file_names <- list.files(path = "data-original/SPARS_B/",
                          pattern = "*.txt")
 
 ## Generate a list of imported dataframes
-data <- map(.x = paste0("./original-data/SPARS_B/", file_names),
-            ~ read_tsv(file = .x))
+data <- map(.x = paste0("original-data/SPARS_B/", file_names),
+             .f = ~ read_tsv(file = .x))
 
 # Name list items
-names(data) <- c("FST1601a", "FST1601b", "FST1602", "FST1603",
-                  "FST1604", "FST1605", "FST1606")
+names(data) <- c("ID01", "ID02", "ID03", "ID04",
+                  "ID05", "ID06", "ID07")
 
 # Remove superfluous columns
 data %<>% map(.x = .,
@@ -32,7 +33,7 @@ data %<>% map(.x = .,
 data %<>% map(.x = .,
               ~ rename(.data = .x,
                        intensity = Intensity,
-                       block = `block number`,
+                       block_number = `block number`,
                        trial_number = `trial number`,
                        SPARS = Rating_given_FEST,
                        NRS = Rating_given_P,
@@ -43,31 +44,37 @@ data %<>% map(.data = .x,
               ~ gather(.x,
                        key = scale,
                        value = rating,
-                       -block, -trial_number, -intensity))
+                       -block_number, -trial_number, -intensity))
 
 # Add PID column
 data %<>% map2(.x = .,
-               .y = c("FST1601a", "FST1601b", "FST1602", "FST1603",
-                      "FST1604", "FST1605", "FST1606"),
+               .y = c("ID01", "ID02", "ID03", "ID04",
+                      "ID05", "ID06", "ID07"),
                ~ mutate(.data = .x,
                         PID = .y))
 
-# Recode SRS ratings as <NA> FST1601a
-# (reaction time values 'RT_NP' recorded for SRS 'Rating_given_NP')
-data$FST1601a %<>%
+# Correct known issue with np_rt (reaction time) and
+# rating_given_np (stimulus intensity rating) for ID01.
+# (Data entered in wrong columns or not at all)
+data$ID01 %<>%
     mutate(rating = ifelse(scale == 'SRS',
                            yes = NA,
                            no = rating))
 
-# Print incomplete cases
+# Check for missing data in selected columns
+## Create column index
+cols <- c('PID', 'block_number', 'trial_number', 'intensity', 'scale')
+
+## Print missing cases
 map(.x = data,
-    ~ filter(.x, !complete.cases(.x)))
+    ~ filter(.x[cols], !complete.cases(.x[cols])))
 
-# Remove incomplete cases
-data %<>% map(.x = .,
-          ~ filter(.x, complete.cases(.x)))
+## Remove missing data
+data %<>%
+    map(.x = .,
+        ~ filter(.x, complete.cases(.x[cols])))
 
-# Join the datasets into a single dataframe
+# Join the seven datasets into one dataframe
 data %<>%
     map_df(~ as_data_frame(.x))
 
@@ -76,38 +83,18 @@ data %<>% mutate(rating = ifelse(scale == 'SRS',
                                  yes = rating - 100,
                                  no = rating))
 
-# Create columns of SPARS-equivalent values for NRS (0 to 50) and SRS (-50 to 0)
-data %<>% mutate(rating_eq = ifelse(scale != 'SPARS',
-                                    yes = rating,
-                                    no = rating / 2))
-
-# Create a labeling column with NRS and SRS combined into a single scale
-data %<>% mutate(scale_combined = ifelse(scale == 'SPARS',
-                                         yes = scale,
-                                         no = 'COMBINED'))
-
-# Center and scale rating data for each scale
-data %<>% group_by(scale) %>%
-  mutate(rating_z = scale(rating))
-
 # Rebase block_number to start at 1 and increase monotically
 data %<>% group_by(PID) %>%
-  arrange(block, trial_number) %>%
-  mutate(block = dense_rank(block))
-
-# Recode intensities on ordinal scale (within participant)
-data %<>% group_by(PID) %>%
-  mutate(intensity_rank = dense_rank(intensity))
+    arrange(block_number, trial_number) %>%
+    mutate(block_number = dense_rank(block_number))
 
 # Ungroup and order columns
 data %<>% ungroup() %>%
-    select(PID, block, trial_number, intensity, intensity_rank,
-           scale, scale_combined,
-           rating, rating_eq, rating_z)
+    select(PID, block_number, trial_number, scale, intensity, rating)
 
 # Save outputs
 write_rds(x = data,
-          path = './data/SPARS_B.rds')
+          path = 'data-cleaned/SPARS_B.rds')
 
 write_csv(x = data,
-          path = './data/SPARS_B.csv')
+          path = 'data-cleaned/SPARS_B.csv')

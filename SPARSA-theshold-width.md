@@ -2,26 +2,10 @@
 title: "Supplement 1"
 subtitle: "SPARS A: Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
-date: "`r format(Sys.Date(), '%d %b %Y')`"
+date: "11 Nov 2018"
 ---
 
-```{r setup, include = FALSE}
-# Load packages
-library(tidyverse)
-library(magrittr)
-library(boot)
-library(skimr)
 
-# Set ggplot theme
-theme_set(new = theme_bw(base_size = 12))
-
-# knitr setup
-knitr::opts_chunk$set(warning = FALSE,
-                      message = FALSE,
-                      fig.align = 'center',
-                      fig.retina = 2,
-                      fig.path = './figures/SPARSA_plots/')
-```
 
 ----
 
@@ -42,7 +26,8 @@ Where:
 - $Q_2$ = 50^th^ percentile (median)  
 - $Q_3$ = 75^th^ percentile
 
-```{r trimean_function}
+
+```r
 # Define the tri_mean function
 tri_mean <- function(x) {
     # Calculate quantiles
@@ -65,15 +50,44 @@ The experimental protocol called for participants to be exposed to 13 stimuli, e
 
 # Import and inspect data
 
-```{r import}
+
+```r
 # Import
 data <- read_rds('data-cleaned/SPARS_A.rds')
 
 # Inspect
 glimpse(data)
+```
+
+```
+## Observations: 1,927
+## Variables: 6
+## $ PID          <chr> "ID01", "ID01", "ID01", "ID01", "ID01", "ID01", "...
+## $ block        <chr> "A", "A", "A", "A", "A", "A", "A", "A", "A", "A",...
+## $ block_order  <dbl> 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4...
+## $ trial_number <dbl> 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 9...
+## $ intensity    <dbl> 3.00, 2.25, 4.00, 3.25, 2.75, 2.25, 2.75, 4.00, 2...
+## $ rating       <dbl> -40, -25, 10, 2, -10, -25, -20, 10, -25, -50, -25...
+```
+
+```r
 data %>% 
     select(intensity, rating) %>% 
     skim()
+```
+
+```
+## Skim summary statistics
+##  n obs: 1927 
+##  n variables: 2 
+## 
+## ── Variable type:numeric ───────────────────────────────────────────────────────────────
+##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
+##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
+##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
+##      hist
+##  ▇▇▃▇▃▇▃▇
+##  ▃▁▂▃▇▅▂▁
 ```
 
 ----
@@ -82,7 +96,8 @@ data %>%
 
 ## Bootstrapping procedure
 
-```{r bootstrap_indiv}
+
+```r
 # Nest data in preparation for bootstrapping at each stimulus intensity
 data_boot <- data %>%
     group_by(PID, intensity) %>%
@@ -146,7 +161,8 @@ data_boot %<>%
 ## Plots
 
 ### Scatter plots
-```{r indiv_scatter, fig.width = 9, fig.height = 10.4}
+
+```r
 # Plot scatter plot of ratings for each individual at every intensity
 ggplot(data = data) +
     aes(x = intensity,
@@ -176,8 +192,11 @@ ggplot(data = data) +
           axis.text.x = element_text(angle = -90))
 ```
 
+<img src="./figures/SPARSA_plots/indiv_scatter-1.png" width="864" style="display: block; margin: auto;" />
+
 ### Trimean confidence interval plots
-```{r indiv_ci, fig.width = 9, fig.height = 10.4}
+
+```r
 # Plot individual CIs at every intensity
 ggplot(data = data_boot) +
     aes(x = intensity,
@@ -207,12 +226,15 @@ ggplot(data = data_boot) +
           axis.text.x = element_text(angle = -90))
 ```
 
+<img src="./figures/SPARSA_plots/indiv_ci-1.png" width="864" style="display: block; margin: auto;" />
+
 ----
 
 # Data at the level of the group
 
 ## Bootstrapping procedure
-```{r bootstrap_group}
+
+```r
 # Calculate individual trimeans at each stimulus intensity
 data_group <- data %>% 
     group_by(PID, intensity) %>% 
@@ -271,7 +293,8 @@ data_boot_group %<>%
 ## Plots
 
 ### Scatter plots
-```{r group_scatter, fig.width = 7, fig.height = 7}
+
+```r
 # Plot scatter plot of ratings for the group at every intensity
 ggplot(data = data_group) +
     aes(x = intensity,
@@ -299,8 +322,11 @@ ggplot(data = data_group) +
           panel.grid = element_blank())
 ```
 
+<img src="./figures/SPARSA_plots/group_scatter-1.png" width="672" style="display: block; margin: auto;" />
+
 ### Trimean confidence interval plots
-```{r group_ci, fig.width = 7, fig.height = 7}
+
+```r
 # Plot group CIs at every intensity
 ggplot(data = data_boot_group) +
     aes(x = intensity) +
@@ -328,10 +354,48 @@ ggplot(data = data_boot_group) +
           panel.grid = element_blank())
 ```
 
+<img src="./figures/SPARSA_plots/group_ci-1.png" width="672" style="display: block; margin: auto;" />
+
 ----
 
 # Session information
 
-```{r session_info}
+
+```r
 sessionInfo()
+```
+
+```
+## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.14
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] bindrcpp_0.2.2  skimr_1.0.3     boot_1.3-20     magrittr_1.5   
+##  [5] forcats_0.3.0   stringr_1.3.1   dplyr_0.7.7     purrr_0.2.5    
+##  [9] readr_1.1.1     tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0  
+## [13] tidyverse_1.2.1
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
+##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
+##  [9] lubridate_1.7.4  jsonlite_1.5     evaluate_0.12    nlme_3.1-137    
+## [13] gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.0.1   
+## [17] cli_1.0.1        rstudioapi_0.8   yaml_2.2.0       haven_1.1.2     
+## [21] withr_2.1.2.9000 xml2_1.2.0       httr_1.3.1       knitr_1.20      
+## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
+## [29] glue_1.3.0       R6_2.3.0         readxl_1.1.0     rmarkdown_1.10  
+## [33] modelr_0.1.2     backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
+## [37] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 stringi_1.2.4   
+## [41] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4
 ```
