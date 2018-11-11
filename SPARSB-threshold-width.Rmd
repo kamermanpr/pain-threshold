@@ -338,6 +338,12 @@ ggplot(data = data_spars) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
           axis.text.x = element_text(angle = -90))
 ```
 
@@ -365,7 +371,13 @@ ggplot(data = data_nrs) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'NRS rating (0, 100)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 #### SRS
@@ -392,7 +404,13 @@ ggplot(data = data_srs) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SRS rating (-100, 0)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 ### Trimean confidence interval plots
@@ -420,7 +438,13 @@ ggplot(data = spars_boot) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 #### NRS
@@ -446,7 +470,13 @@ ggplot(data = nrs_boot) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'NRS rating (0, 100)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 #### SRS
@@ -472,7 +502,13 @@ ggplot(data = srs_boot) +
          x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SRS rating (-100, 0)') +
     theme(legend.position = 'none',
-          panel.grid = element_blank())
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
 ```
 
 ----
