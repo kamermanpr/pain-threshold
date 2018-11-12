@@ -1,0 +1,537 @@
+---
+title: "Supplement 4"
+subtitle: "Does the difference in stimulus intensity between successive stimuli affect intensity rating"
+author: "Peter Kamerman and Tory Madden"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+---
+
+```{r setup, include = FALSE}
+# Load packages
+library(tidyverse)
+library(magrittr)
+library(skimr)
+
+# Set ggplot theme
+theme_set(new = theme_bw(base_size = 12))
+
+# knitr setup
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE,
+                      fig.retina = 2,
+                      fig.align = 'center',
+                      fig.path = './figures/Suppl-04-stimulus-intensity-change/')
+```
+
+----
+
+# Question
+We wanted to know whether the difference in intensity between two successive stimuli predicts the rating of the response to the second stimulus. 
+
+We hypothesized that ratings of a given stimulus intensity increases as the magnitude of the difference between the stimulus and the preceding stimulus increases. 
+
+We assessed this relationship graphically by plotting:
+
+1. Plotting the ratings at each stimulus intensity, and for each participant, corresponding with the maximum and minimum absolute difference in stimulus intensity between a given stimulus intenisty and the preceding stimulus.
+
+2. Plotting all ratings at each stimulus intensity, and for each participant, and colour coding the data points according to the difference in stimulus intensity to the preceding stimulus for each rating.
+
+----
+
+# SPARS A
+
+## Import and inspect data
+```{r sparsA_import}
+# Import
+data_sparsA <- read_rds('data-cleaned/SPARS_A.rds')
+
+# Inspect
+glimpse(data_sparsA)
+data_sparsA %>% 
+    select(intensity, rating) %>% 
+    skim()
+```
+
+## Process the data
+```{r sparsA_processing}
+# Select columns
+data_sparsA %<>%
+    select(PID, block, trial_number, intensity, rating)
+
+# Nest data by PID
+sparsA_nest <- data_sparsA %>% 
+    group_by(PID) %>% 
+    nest() 
+
+# Group nested data by block
+sparsA_nest %<>% 
+   mutate(data = map(.x = data, 
+                    ~ .x %>% 
+                        group_by(block)))
+
+# Sort each block by trial number
+sparsA_nest %<>% 
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          arrange(trial_number)))
+
+# Calculate the absolute value of the lag one stimulus intensity difference
+sparsA_nest %<>% 
+    # Extract intensity from 'data'
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          mutate(delta_intensity = abs(intensity - 
+                                                             lag(intensity))) %>% 
+                          # Remove stimulus 1 of each block (<NA>)
+                          filter(!is.na(delta_intensity)))) %>% 
+    # Unnest dataframe
+    unnest()
+
+# Add max/min plot colour coding
+sparsA_nest %<>% 
+    group_by(PID, intensity) %>% 
+    mutate(colour = case_when(
+        delta_intensity == max(delta_intensity) ~ 'max',
+        delta_intensity == min(delta_intensity) ~ 'min',
+        delta_intensity > min(delta_intensity) &
+            delta_intensity < max(delta_intensity) ~ 'other'
+    )) %>% 
+    ungroup() %>% 
+    arrange(PID, intensity, delta_intensity)
+```
+
+## Plots 
+
+### Maximum and minimum inter-stimulus intensity change only
+```{r sparsA_plot1, fig.height = 10, fig.width = 9}
+sparsA_nest %>% 
+    filter(colour != 'other') %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = colour) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 3,
+               alpha = 0.8) + 
+    labs(title = "SPARS A: Scatterplot of intensity ratings at each stimulus intensity\nfor the max and min inter-stimulus intensity difference only*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                  to = 4, 
+                                  by = 0.5),
+                       labels = sprintf('%.2f', seq(from = 1, 
+                                                    to = 4, 
+                                                    by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       labels = c(-50, -25, 0, 25, 50)) +
+    scale_fill_viridis_d(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
+          axis.text.x = element_text(angle = -90, 
+                                     vjust = 0.5))
+```
+
+### All inter-stimulus intensity changes
+```{r sparsA_plot2, fig.height = 10, fig.width = 9}
+sparsA_nest %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = delta_intensity) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) + 
+    labs(title = "SPARS A: Scatterplot of intensity ratings at each stimulus intensity\nfor all inter-stimulus intensity differences*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50, 50)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                  to = 4, 
+                                  by = 0.5),
+                       labels = sprintf('%.2f', seq(from = 1, 
+                                                    to = 4, 
+                                                    by = 0.5))) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       labels = c(-50, -25, 0, 25, 50)) +
+    scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
+          axis.text.x = element_text(angle = -90, 
+                                     vjust = 0.5))
+```
+
+----
+
+# SPARS B
+
+## Import and inspect data
+```{r sparsB_import}
+# Import
+data_sparsB <- read_rds('data-cleaned/SPARS_B.rds') %>% 
+    # Extract trials rated using the SPARS
+    filter(scale == 'SPARS') %>% 
+    # Remove <NA>
+    filter(!is.na(rating))
+
+# Rank stimulus intensity
+data_sparsB %<>%
+    group_by(PID, scale) %>% 
+    arrange(intensity) %>% 
+    mutate(intensity_rank = dense_rank(intensity)) %>% 
+    select(-intensity) %>% 
+    rename(intensity = intensity_rank) %>% 
+    ungroup()
+
+# Inspect
+glimpse(data_sparsB)
+data_sparsB %>% 
+    select(intensity, rating) %>% 
+    skim()
+```
+
+## Process the data
+```{r sparsB_processing}
+# Select columns
+data_sparsB %<>%
+    select(PID, block_number, trial_number, intensity, rating)
+
+# Nest data by PID
+sparsB_nest <- data_sparsB %>% 
+    group_by(PID) %>% 
+    nest() 
+
+# Group nested data by block
+sparsB_nest %<>% 
+   mutate(data = map(.x = data, 
+                    ~ .x %>% 
+                        group_by(block_number)))
+
+# Sort each block by trial number
+sparsB_nest %<>% 
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          arrange(trial_number)))
+
+# Calculate the absolute value of the lag one stimulus intensity difference
+sparsB_nest %<>% 
+    # Extract intensity from 'data'
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          mutate(delta_intensity = abs(intensity - 
+                                                             lag(intensity))) %>% 
+                          # Remove stimulus 1 of each block (<NA>)
+                          filter(!is.na(delta_intensity)))) %>% 
+    # Unnest dataframe
+    unnest()
+
+# Add max/min plot colour coding
+sparsB_nest %<>% 
+    group_by(PID, intensity) %>% 
+    mutate(colour = case_when(
+        delta_intensity == max(delta_intensity) ~ 'max',
+        delta_intensity == min(delta_intensity) ~ 'min',
+        delta_intensity > min(delta_intensity) &
+            delta_intensity < max(delta_intensity) ~ 'other'
+    )) %>% 
+    ungroup() %>% 
+    arrange(PID, intensity, delta_intensity)
+```
+
+## Plots 
+
+### Maximum and minimum inter-stimulus intensity change only
+```{r sparsB_plot1, fig.height = 5.6, fig.width = 9}
+sparsB_nest %>% 
+    filter(colour != 'other') %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = colour) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 3,
+               alpha = 0.8) + 
+    labs(title = "SPARS B: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor the max and min inter-stimulus intensity difference only*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SPARS rating (-50, 50)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       labels = c(-50, -25, 0, 25, 50)) +
+    scale_fill_viridis_d(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
+```
+
+### All inter-stimulus intensity changes
+```{r sparsB_plot2, fig.height = 5.6, fig.width = 9}
+sparsB_nest %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = delta_intensity) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) + 
+    labs(title = "SPARS B: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor all inter-stimulus intensity differences*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SPARS rating (-50, 50)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       labels = c(-50, -25, 0, 25, 50)) +
+    scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
+          axis.text.x = element_text(angle = -90, 
+                                     vjust = 0.5))
+```
+
+----
+
+# NRS
+
+## Import and inspect data
+```{r nrs_import}
+# Import
+data_nrs <- read_rds('data-cleaned/SPARS_B.rds') %>% 
+    # Extract trials rated using the SPARS
+    filter(scale == 'NRS') %>% 
+    # Remove <NA>
+    filter(!is.na(rating))
+
+# Rank stimulus intensity
+data_nrs %<>%
+    group_by(PID, scale) %>% 
+    arrange(intensity) %>% 
+    mutate(intensity_rank = dense_rank(intensity)) %>% 
+    select(-intensity) %>% 
+    rename(intensity = intensity_rank) %>% 
+    ungroup()
+
+# Inspect
+glimpse(data_nrs)
+data_nrs %>% 
+    select(intensity, rating) %>% 
+    skim()
+```
+
+## Process the data
+```{r nrs_processing}
+# Select columns
+data_nrs <- data_nrs %>%
+    select(PID, block_number, trial_number, intensity, rating)
+
+# Nest data by PID
+nrs_nest <- data_nrs %>% 
+    group_by(PID) %>% 
+    nest() 
+
+# Group nested data by block
+nrs_nest %<>% 
+   mutate(data = map(.x = data, 
+                    ~ .x %>% 
+                        group_by(block_number)))
+
+# Sort each block by trial number
+nrs_nest %<>% 
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          arrange(trial_number)))
+
+# Calculate the absolute value of the lag one stimulus intensity difference
+nrs_nest %<>% 
+    # Extract intensity from 'data'
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          mutate(delta_intensity = abs(intensity - 
+                                                             lag(intensity))) %>% 
+                          # Remove stimulus 1 of each block (<NA>)
+                          filter(!is.na(delta_intensity)))) %>% 
+    # Unnest dataframe
+    unnest()
+
+# Add max/min plot colour coding
+nrs_nest %<>% 
+    group_by(PID, intensity) %>% 
+    mutate(colour = case_when(
+        delta_intensity == max(delta_intensity) ~ 'max',
+        delta_intensity == min(delta_intensity) ~ 'min',
+        delta_intensity > min(delta_intensity) &
+            delta_intensity < max(delta_intensity) ~ 'other'
+    )) %>% 
+    ungroup() %>% 
+    arrange(PID, intensity, delta_intensity)
+```
+
+## Plots 
+
+### Maximum and minimum inter-stimulus intensity change only
+```{r nrs_plot1, fig.height = 5.6, fig.width = 9}
+nrs_nest %>% 
+    filter(colour != 'other') %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = colour) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 3,
+               alpha = 0.8) + 
+    labs(title = "NRS: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor the max and min inter-stimulus intensity difference only*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0, 100)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 25, 50, 75, 100),
+                       labels = c(0, 25, 50, 75, 100)) +
+    scale_fill_viridis_d(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
+```
+
+### All inter-stimulus intensity changes
+```{r nrs_plot2, fig.height = 5.6, fig.width = 9}
+nrs_nest %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = delta_intensity) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) + 
+    labs(title = "NRS: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor all inter-stimulus intensity differences*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0, 100)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 25, 50, 75, 100),
+                       labels = c(0, 25, 50, 75, 100)) +
+    scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')),
+          axis.text.x = element_text(angle = -90, 
+                                     vjust = 0.5))
+```
+
+----
+
+# Session information
+
+```{r session_info}
+sessionInfo()
+```
