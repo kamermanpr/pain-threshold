@@ -100,7 +100,6 @@ data %>%
 # Data at the level of the individual
 
 ## Bootstrapping procedure for SPARS, NRS, and SRS
-
 ```{r bootstrap_indiv}
 ############################################################
 #                                                          #
@@ -678,7 +677,7 @@ srs_boot_group %<>%
                              yes = 0,
                              no = upper_ci),
            lower_ci = ifelse(lower_ci < -100,
-                             yes = 100,
+                             yes = -100,
                              no = lower_ci)) 
 
 # Add fill column for plot
@@ -825,7 +824,7 @@ ggplot(data = nrs_boot_group) +
           panel.grid = element_blank())
 ```
 
-#### SPARS
+#### SRS
 ```{r srs_group_ci, fig.width = 7, fig.height = 7}
 # Plot group CIs at every intensity
 ggplot(data = srs_boot_group) +

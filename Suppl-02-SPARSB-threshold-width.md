@@ -1,8 +1,8 @@
 ---
 title: "Supplement 2"
-subtitle: "SPARS B: Width of the pain threshold"
+subtitle: "SPARS B (including NRS and SRS): Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
-date: "11 Nov 2018"
+date: "13 Nov 2018"
 ---
 
 
@@ -117,7 +117,6 @@ data %>%
 
 ## Bootstrapping procedure for SPARS, NRS, and SRS
 
-
 ```r
 ############################################################
 #                                                          #
@@ -172,9 +171,9 @@ spars_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 50,
                              yes = 50,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < -50,
-                           yes = -50,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < -50,
+                             yes = -50,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 spars_boot %<>%
@@ -241,9 +240,9 @@ nrs_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 100,
                              yes = 100,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < 0,
-                           yes = 0,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < 0,
+                             yes = 0,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 nrs_boot %<>%
@@ -309,9 +308,9 @@ srs_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 0,
                              yes = 0,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < -100,
-                           yes = -100,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < -100,
+                             yes = -100,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 srs_boot %<>%
@@ -361,7 +360,7 @@ ggplot(data = data_spars) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/spars_scatter-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/spars_scatter-1.png" width="864" style="display: block; margin: auto;" />
 
 #### NRS
 
@@ -397,7 +396,7 @@ ggplot(data = data_nrs) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/nrs_scatter-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/nrs_scatter-1.png" width="864" style="display: block; margin: auto;" />
 
 #### SRS
 
@@ -433,7 +432,7 @@ ggplot(data = data_srs) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/srs_scatter-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/srs_scatter-1.png" width="864" style="display: block; margin: auto;" />
 
 ### Trimean confidence interval plots
 
@@ -470,7 +469,7 @@ ggplot(data = spars_boot) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/spars_ci-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/spars_ci-1.png" width="864" style="display: block; margin: auto;" />
 
 #### NRS
 
@@ -505,7 +504,7 @@ ggplot(data = nrs_boot) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/nrs_ci-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/nrs_ci-1.png" width="864" style="display: block; margin: auto;" />
 
 #### SRS
 
@@ -540,7 +539,7 @@ ggplot(data = srs_boot) +
                                                     'lines')))
 ```
 
-<img src="./figures/SPARSB_plots/srs_ci-1.png" width="864" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/srs_ci-1.png" width="864" style="display: block; margin: auto;" />
 
 ----
 
@@ -714,7 +713,7 @@ srs_boot_group %<>%
                              yes = 0,
                              no = upper_ci),
            lower_ci = ifelse(lower_ci < -100,
-                             yes = 100,
+                             yes = -100,
                              no = lower_ci)) 
 
 # Add fill column for plot
@@ -758,7 +757,7 @@ ggplot(data = group_spars) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/spars_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/spars_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
 
 #### NRS
 
@@ -787,7 +786,7 @@ ggplot(data = group_nrs) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/nrs_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/nrs_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
 
 #### SRS
 
@@ -816,7 +815,7 @@ ggplot(data = group_srs) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/srs_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/srs_group_scatter-1.png" width="672" style="display: block; margin: auto;" />
 
 ### Trimean confidence interval plots
 
@@ -846,7 +845,7 @@ ggplot(data = spars_boot_group) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/spars_group_ci-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/spars_group_ci-1.png" width="672" style="display: block; margin: auto;" />
 
 #### NRS
 
@@ -874,9 +873,9 @@ ggplot(data = nrs_boot_group) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/nrs_group_ci-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/nrs_group_ci-1.png" width="672" style="display: block; margin: auto;" />
 
-#### SPARS
+#### SRS
 
 ```r
 # Plot group CIs at every intensity
@@ -902,7 +901,7 @@ ggplot(data = srs_boot_group) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/SPARSB_plots/srs_group_ci-1.png" width="672" style="display: block; margin: auto;" />
+<img src="./figures/Suppl-02-SPARSB/srs_group_ci-1.png" width="672" style="display: block; margin: auto;" />
 
 ----
 
