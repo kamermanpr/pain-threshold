@@ -730,7 +730,7 @@ nrs15_nest %>%
 
 ----
 
-# SRS
+# SRS (zero: 0)
 
 ## Import and inspect data
 
@@ -928,6 +928,109 @@ srs_nest %>%
 ```
 
 <img src="./figures/Suppl-03-binomial-analysis/srs_plot-1.png" width="864" style="display: block; margin: auto;" />
+
+----
+
+# SRS (zero: -15 to 0)
+
+There is no evidential basis to repeat the SRS analysis using a -15 to 0 range as being **'positive'**, but for comparative purposes to the analyses done for the NRS, we performed the analysis of the SRS using the expanded definition of pain threshold.
+
+## Import and inspect data
+Data already imported, inspected, and nested _(data\_srs, srs\_nest)_.
+
+## Binomial test
+
+```r
+# Generate data
+srs15_nest <- srs_nest %>% 
+    # Add probability of success column
+    mutate(prob = 0.5) %>% 
+    # Extract rating data from dataframe
+    mutate(data_vec = map(.x = data,
+                          ~ .$rating)) %>% 
+    # Recode rating data as categories according to whether 
+    # the value is greater than 0 (minimum rating on NRS)
+    mutate(data_cat = map(.x = data_vec,
+                          ~ ifelse(.x >= -15,
+                                   yes = 'positive',
+                                   no = 'negative'))) %>% 
+    # Count the number of positive and negative ratings
+    ## positive numbers arbitrarily listed first == 'success'
+    mutate(success_count = map(.x = data_cat,
+                           ~ c(length(.x[.x == 'positive']), 
+                               length(.x[.x == 'negative'])))) %>% 
+    # Conduct binomial test (two-sided)
+    mutate(binomial_test = map2(.x = success_count,
+                                .y = prob,
+                                ~ binom.test(x = .x, 
+                                             p = .y,
+                                             alternative = 'greater'))) %>% 
+    # Extract p-value from binomial_test
+    mutate(binomial_p.value = map(.x = binomial_test,
+                                 ~ .x$p.value %>%
+                                     round(., 3))) %>% 
+    # Categorise p-value using a p < 0.05 threshold
+    ## Significant: distribution deviates significantly 
+    ## from the theoretical distribution
+    ## No correction for multiple comparisons 
+    ## (too conservative for explorartory analysis)
+    mutate(significant_p.value = map(.x = binomial_p.value,
+                                     ~ ifelse(.x < 0.05,
+                                              yes = 'yes',
+                                              no = 'no')))
+```
+
+## Plot
+
+```r
+srs15_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_srs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    # Plot
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    labs(title = "SRS (0-15): Binomial test of positive/negative rating distribution",
+         subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
+         caption = "* 'success' arbitrarily chosen as SRS rating > -16",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100, 0)') +
+    scale_x_discrete(breaks = seq(from = 1, 
+                                  to = 9, 
+                                  by = 1),
+                     labels = sprintf('%.0f', seq(from = 1, 
+                                                  to = 9, 
+                                                  by = 1))) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0),
+                       labels = c(-100, -75, -50, -25, 0)) +
+    scale_fill_manual(values = c('#FFFFFF', '#000000')) +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'none',
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
+```
+
+<img src="./figures/Suppl-03-binomial-analysis/srs15_plot-1.png" width="864" style="display: block; margin: auto;" />
 
 ----
 
