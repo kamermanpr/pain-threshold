@@ -2,7 +2,7 @@
 title: "Supplement 4"
 subtitle: "Does the difference in stimulus intensity between successive stimuli affect intensity rating"
 author: "Peter Kamerman and Tory Madden"
-date: "12 Nov 2018"
+date: "13 Nov 2018"
 ---
 
 
@@ -410,9 +410,7 @@ sparsB_nest %>%
                                                     b = 0.1, 
                                                     r = 1, 
                                                     l = 1, 
-                                                    'lines')),
-          axis.text.x = element_text(angle = -90, 
-                                     vjust = 0.5))
+                                                    'lines')))
 ```
 
 <img src="./figures/Suppl-04-stimulus-intensity-change/sparsB_plot2-1.png" width="864" style="display: block; margin: auto;" />
@@ -614,12 +612,212 @@ nrs_nest %>%
                                                     b = 0.1, 
                                                     r = 1, 
                                                     l = 1, 
-                                                    'lines')),
-          axis.text.x = element_text(angle = -90, 
-                                     vjust = 0.5))
+                                                    'lines')))
 ```
 
 <img src="./figures/Suppl-04-stimulus-intensity-change/nrs_plot2-1.png" width="864" style="display: block; margin: auto;" />
+
+----
+
+# SRS
+
+## Import and inspect data
+
+```r
+# Import
+data_srs <- read_rds('data-cleaned/SPARS_B.rds') %>% 
+    # Extract trials rated using the SPARS
+    filter(scale == 'SRS') %>% 
+    # Remove <NA>
+    filter(!is.na(rating))
+
+# Rank stimulus intensity
+data_srs %<>%
+    group_by(PID, scale) %>% 
+    arrange(intensity) %>% 
+    mutate(intensity_rank = dense_rank(intensity)) %>% 
+    select(-intensity) %>% 
+    rename(intensity = intensity_rank) %>% 
+    ungroup()
+
+# Inspect
+glimpse(data_srs)
+```
+
+```
+## Observations: 644
+## Variables: 6
+## $ PID          <chr> "ID06", "ID06", "ID06", "ID06", "ID06", "ID06", "...
+## $ block_number <int> 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 5, 5, 5, 6, 6...
+## $ trial_number <int> 2, 16, 26, 13, 19, 21, 1, 17, 27, 2, 4, 5, 6, 24,...
+## $ scale        <chr> "SRS", "SRS", "SRS", "SRS", "SRS", "SRS", "SRS", ...
+## $ rating       <dbl> -34, -99, -89, -99, -100, -99, -59, -96, -70, -92...
+## $ intensity    <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2...
+```
+
+```r
+data_srs %>% 
+    select(intensity, rating) %>% 
+    skim()
+```
+
+```
+## Skim summary statistics
+##  n obs: 644 
+##  n variables: 2 
+## 
+## ── Variable type:integer ───────────────────────────────────────────────────────────────
+##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
+##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
+## 
+## ── Variable type:numeric ───────────────────────────────────────────────────────────────
+##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
+##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
+```
+
+## Process the data
+
+```r
+# Select columns
+data_srs <- data_srs %>%
+    select(PID, block_number, trial_number, intensity, rating)
+
+# Nest data by PID
+srs_nest <- data_srs %>% 
+    group_by(PID) %>% 
+    nest() 
+
+# Group nested data by block
+srs_nest %<>% 
+   mutate(data = map(.x = data, 
+                    ~ .x %>% 
+                        group_by(block_number)))
+
+# Sort each block by trial number
+srs_nest %<>% 
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          arrange(trial_number)))
+
+# Calculate the absolute value of the lag one stimulus intensity difference
+srs_nest %<>% 
+    # Extract intensity from 'data'
+    mutate(data = map(.x = data,
+                      ~ .x %>% 
+                          mutate(delta_intensity = abs(intensity - 
+                                                             lag(intensity))) %>% 
+                          # Remove stimulus 1 of each block (<NA>)
+                          filter(!is.na(delta_intensity)))) %>% 
+    # Unnest dataframe
+    unnest()
+
+# Add max/min plot colour coding
+srs_nest %<>% 
+    group_by(PID, intensity) %>% 
+    mutate(colour = case_when(
+        delta_intensity == max(delta_intensity) ~ 'max',
+        delta_intensity == min(delta_intensity) ~ 'min',
+        delta_intensity > min(delta_intensity) &
+            delta_intensity < max(delta_intensity) ~ 'other'
+    )) %>% 
+    ungroup() %>% 
+    arrange(PID, intensity, delta_intensity)
+```
+
+## Plots 
+
+### Maximum and minimum inter-stimulus intensity change only
+
+```r
+srs_nest %>% 
+    filter(colour != 'other') %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = colour) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 3,
+               alpha = 0.8) + 
+    labs(title = "SRS: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor the max and min inter-stimulus intensity difference only*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100, 0)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0),
+                       labels = c(-100, -75, -50, -25, 0)) +
+    scale_fill_viridis_d(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
+```
+
+<img src="./figures/Suppl-04-stimulus-intensity-change/srs_plot1-1.png" width="864" style="display: block; margin: auto;" />
+
+### All inter-stimulus intensity changes
+
+```r
+srs_nest %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = delta_intensity) +
+    geom_hline(yintercept = 0,
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 2,
+               alpha = 0.8) + 
+    labs(title = "SRS: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor all inter-stimulus intensity differences*",
+         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
+         x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100, 0)') +
+    scale_x_continuous(breaks = seq(from = 1, 
+                                    to = 9, 
+                                    by = 1),
+                       labels = sprintf('%.0f', seq(from = 1, 
+                                                    to = 9, 
+                                                    by = 1))) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0),
+                       labels = c(-100, -75, -50, -25, 0)) +
+    scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
+                         option = 'C') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme(legend.position = 'top',
+          legend.margin = margin(t = -0.2, 
+                                 l = 0, 
+                                 b = -0.4, 
+                                 r = 0, 
+                                 unit = 'lines'),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          strip.text = element_text(margin = margin(t = 0.1, 
+                                                    b = 0.1, 
+                                                    r = 1, 
+                                                    l = 1, 
+                                                    'lines')))
+```
+
+<img src="./figures/Suppl-04-stimulus-intensity-change/srs_plot2-1.png" width="864" style="display: block; margin: auto;" />
 
 ----
 

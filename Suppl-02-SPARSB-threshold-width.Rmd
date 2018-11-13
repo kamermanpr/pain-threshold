@@ -1,6 +1,6 @@
 ---
 title: "Supplement 2"
-subtitle: "SPARS B: Width of the pain threshold"
+subtitle: "SPARS B (including NRS and SRS): Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
 date: "`r format(Sys.Date(), '%d %b %Y')`"
 ---
@@ -155,9 +155,9 @@ spars_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 50,
                              yes = 50,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < -50,
-                           yes = -50,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < -50,
+                             yes = -50,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 spars_boot %<>%
@@ -224,9 +224,9 @@ nrs_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 100,
                              yes = 100,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < 0,
-                           yes = 0,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < 0,
+                             yes = 0,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 nrs_boot %<>%
@@ -292,9 +292,9 @@ srs_boot %<>%
     mutate(upper_ci = ifelse(upper_ci > 0,
                              yes = 0,
                              no = upper_ci),
-         lower_ci = ifelse(lower_ci < -100,
-                           yes = -100,
-                           no = lower_ci)) 
+           lower_ci = ifelse(lower_ci < -100,
+                             yes = -100,
+                             no = lower_ci)) 
 
 # Add fill column for plot
 srs_boot %<>%
