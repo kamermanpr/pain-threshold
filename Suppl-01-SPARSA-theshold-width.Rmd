@@ -20,7 +20,7 @@ knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
                       fig.align = 'center',
                       fig.retina = 2,
-                      fig.path = './figures/Suppl-01-SPARSA/')
+                      fig.path = './figures/Suppl-01-SPARSA-threshold-width/')
 ```
 
 ----
