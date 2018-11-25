@@ -217,6 +217,49 @@ ggplot(data = data_boot) +
                                                     l = 1, 
                                                     'lines')),
           axis.text.x = element_text(angle = -90))
+
+## Paper plot (Fig 1a)
+fig_1a <- ggplot(data = data_boot) +
+    aes(x = intensity,
+        fill = fill) +
+    geom_hline(yintercept = 0, 
+               linetype = 2,
+               size = 1) +
+    geom_crossbar(aes(y = tri_mean,
+                      ymin = lower_ci,
+                      ymax = upper_ci)) +
+    scale_fill_manual(values = c('#999999', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_continuous(breaks = 1:4) +
+    labs(x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50 to 50)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines'))); fig_1a
+
+ggsave(filename = 'figures/fig_1a.png', 
+       plot = fig_1a,
+       width = 9,
+       height = 10.4)
 ```
 
 ----
@@ -241,7 +284,7 @@ set.seed(987654321)
 data_boot_group %<>% mutate(boot = map(.x = data, 
                                        ~ boot(data = .x$tri_mean, 
                                               statistic = boot_tri_mean, 
-                                              R = 10000, # For small sample size
+                                              R = 100, # For small sample size
                                               stype = 'i')))
 
 # Extract CI from boot object
@@ -338,6 +381,43 @@ ggplot(data = data_boot_group) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank())
+
+## Paper plot (Fig 1a)
+fig_1b <- ggplot(data = data_boot_group) +
+    aes(x = intensity) +
+    geom_crossbar(aes(y = tri_mean,
+                      ymin = lower_ci,
+                      ymax = upper_ci,
+                      fill = fill)) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    scale_fill_manual(values = c('#999999', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_continuous(breaks = 1:4) +
+    labs(x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50 to 50)') +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines'))); fig_1b
+
+ggsave(filename = 'figures/fig_1b.png', 
+       plot = fig_1b,
+       width = 9,
+       height = 10.4)
 ```
 
 ----
