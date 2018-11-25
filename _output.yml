@@ -6,11 +6,3 @@ html_document:
   toc_depth: 5
   toc_float: true
   code_folding: show
-#pdf_document:
-#  latex_engine: xelatex
-#  hightlight: pygments
-#  toc: true
-#  toc_depth: 5
-#  font: Helvetica
-#  fontsize: 12pt
-#  geometry: margin=13mm
