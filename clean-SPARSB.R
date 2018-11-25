@@ -14,7 +14,7 @@ file_names <- list.files(path = "data-original/SPARS_B/",
                          pattern = "*.txt")
 
 ## Generate a list of imported dataframes
-data <- map(.x = paste0("original-data/SPARS_B/", file_names),
+data <- map(.x = paste0("data-original/SPARS_B/", file_names),
              .f = ~ read_tsv(file = .x))
 
 # Name list items
