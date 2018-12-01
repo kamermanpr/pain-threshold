@@ -19,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
                       fig.retina = 2,
                       fig.align = 'center',
-                      fig.path = './figures/Suppl-03-binomial-analysis/')
+                      fig.path = 'figures/Suppl-03-binomial-analysis/')
 ```
 
 ----
@@ -154,6 +154,61 @@ sparsA_nest %>%
                                                     'lines')),
           axis.text.x = element_text(angle = -90, 
                                      vjust = 0.5))
+
+## Paper plot (Fig 1c)
+fig_1c <- sparsA_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_sparsA) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = 1:4) +
+    labs(x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50 to 50)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1c.png', 
+       plot = fig_1c,
+       width = 9,
+       height = 10.4)
 ```
 
 ----
@@ -296,6 +351,61 @@ sparsB_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1f)
+fig_1f <- sparsB_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_sparsB) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SPARS rating (-50 to 50)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1f.png', 
+       plot = fig_1f,
+       width = 9,
+       height = 4.82)
 ```
 
 ----
@@ -437,6 +547,61 @@ nrs0_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1i)
+fig_1i <- nrs0_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_nrs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 25, 50, 75, 100),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0 to 100)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1i.png', 
+       plot = fig_1i,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -534,6 +699,61 @@ nrs15_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1i)
+fig_1j <- nrs15_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_nrs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 25, 50, 75, 100),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0 to 100)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1j.png', 
+       plot = fig_1j,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -675,6 +895,61 @@ srs_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1m)
+fig_1m <- srs_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_srs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100 to 0)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1m.png', 
+       plot = fig_1m,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -774,6 +1049,61 @@ srs15_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1i)
+fig_1n <- srs15_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_srs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value) +
+    geom_hline(yintercept = 0,
+               linetype = 2,
+               size = 1) +
+    geom_point(colour = '#000000',
+               shape = 21,
+               size = 2,
+               alpha = 0.7) + 
+    scale_fill_manual(values = c('#666666', '#FFFFFF')) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0),
+                       expand = c(0,0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100 to 0)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_1n.png', 
+       plot = fig_1n,
+       width = 9,
+       height = 4.8)
 ```
 
 ----

@@ -49,7 +49,7 @@ data-cleaned/SPARS_A.rds
 outputs/Suppl-02-SPARSB-threshold-width.html outputs/Suppl-02-SPARSB-threshold-width.md: \
 Suppl-02-SPARSB-threshold-width.Rmd \
 data-cleaned/SPARS_B.rds
-	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/)"
+	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/')"
 	mv figures/Suppl-02-SPARSB-threshold-width outputs/figures/
 
 outputs/Suppl-03-binomial-analysis.html	outputs/Suppl-03-binomial-analysis.md: \

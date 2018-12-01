@@ -254,7 +254,7 @@ fig_1a <- ggplot(data = data_boot) +
                                                       'lines')),
           axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
                                                       r = 0, l = 0,
-                                                      'lines'))); fig_1a
+                                                      'lines')))
 
 ggsave(filename = 'figures/fig_1a.png', 
        plot = fig_1a,
@@ -412,11 +412,11 @@ fig_1b <- ggplot(data = data_boot_group) +
                                                       'lines')),
           axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
                                                       r = 0, l = 0,
-                                                      'lines'))); fig_1b
+                                                      'lines')))
 
 ggsave(filename = 'figures/fig_1b.png', 
        plot = fig_1b,
-       width = 9,
+       width = 10.4,
        height = 10.4)
 ```
 
