@@ -17,9 +17,8 @@ theme_set(new = theme_bw(base_size = 12))
 # knitr setup
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      fig.retina = 2,
                       fig.align = 'center',
-                      fig.path = './figures/Suppl-03-binomial-analysis/')
+                      fig.path = 'figures/Suppl-03-binomial-analysis/')
 ```
 
 ----
@@ -121,13 +120,21 @@ sparsA_nest %>%
     ggplot(data = .) +
     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = -25,
+               linetype = 2) +
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
     labs(title = "SPARS A: Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as a positive SPARS ratings",
@@ -140,9 +147,10 @@ sparsA_nest %>%
                                                   to = 4, 
                                                   by = 0.5))) +
     scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, -25, 0, 25, 50),
-                       labels = c(-50, -25, 0, 25, 50)) +
-    scale_fill_manual(values = c('#000000', '#FFFFFF')) +
+                       breaks = c(-50, 0, 50),
+                       labels = c(-50, 0, 50)) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -154,6 +162,71 @@ sparsA_nest %>%
                                                     'lines')),
           axis.text.x = element_text(angle = -90, 
                                      vjust = 0.5))
+
+## Paper plot (Fig 1c)
+fig_c <- sparsA_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_sparsA) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
+               linetype = 2) +
+    geom_hline(yintercept = -25,
+               linetype = 2) +
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, 0, 50)) +
+    scale_x_discrete(breaks = 1:4) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
+    labs(x = 'Stimulus intensity (J)',
+         y = 'SPARS rating (-50 to 50)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines'),
+                                      size = 25),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines'),
+                                      size = 25))
+
+ggsave(filename = 'figures/fig_c.png', 
+       plot = fig_c,
+       width = 9,
+       height = 10.4)
 ```
 
 ----
@@ -265,13 +338,21 @@ sparsB_nest %>%
     ggplot(data = .) +
     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = -25,
+               linetype = 2) +
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
     labs(title = "SPARS B: Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as a positive SPARS ratings",
@@ -286,7 +367,8 @@ sparsB_nest %>%
     scale_y_continuous(limits = c(-50, 50),
                        breaks = c(-50, -25, 0, 25, 50),
                        labels = c(-50, -25, 0, 25, 50)) +
-    scale_fill_manual(values = c('#000000', '#FFFFFF')) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -296,6 +378,68 @@ sparsB_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1f)
+fig_f <- sparsB_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_sparsB) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
+               linetype = 2) +
+    geom_hline(yintercept = -25,
+               linetype = 2) +
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
+    scale_y_continuous(limits = c(-50, 50),
+                       breaks = c(-50, -25, 0, 25, 50)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SPARS rating (-50 to 50)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_f.png', 
+       plot = fig_f,
+       width = 9,
+       height = 4.82)
 ```
 
 ----
@@ -406,13 +550,21 @@ nrs0_nest %>%
     ggplot(data = .) +
     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = 50,
+               linetype = 2) +
+    geom_hline(yintercept = 75,
+               linetype = 2) +
+    geom_hline(yintercept = 100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
     labs(title = "NRS (0): Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as NRS rating > 0",
@@ -425,9 +577,10 @@ nrs0_nest %>%
                                                   to = 9, 
                                                   by = 1))) +
     scale_y_continuous(limits = c(0, 100),
-                       breaks = c(0, 25, 50, 75, 100),
-                       labels = c(0, 25, 50, 75, 100)) +
-    scale_fill_manual(values = c('#000000', '#FFFFFF')) +
+                       breaks = c(0, 50, 100),
+                       labels = c(0, 50, 100)) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -437,6 +590,68 @@ nrs0_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1i)
+fig_i <- nrs0_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_nrs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25,
+               linetype = 2) +
+    geom_hline(yintercept = 50,
+               linetype = 2) +
+    geom_hline(yintercept = 75,
+               linetype = 2) +
+    geom_hline(yintercept = 100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 50, 100)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0 to 100)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_i.png', 
+       plot = fig_i,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -503,13 +718,25 @@ nrs15_nest %>%
     ggplot(data = .) +
     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_rect(aes(ymin = 0, ymax = 15, 
+                  xmin = -1, xmax = 10),
+              fill = '#666666',
+              colour = '#666666') +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25, 
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = 75, 
+               linetype = 2) +
+    geom_hline(yintercept = 100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) + 
     labs(title = "NRS (0-15): Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as NRS rating > 15",
@@ -522,9 +749,10 @@ nrs15_nest %>%
                                                   to = 9, 
                                                   by = 1))) +
     scale_y_continuous(limits = c(0, 100),
-                       breaks = c(0, 25, 50, 75, 100),
-                       labels = c(0, 25, 50, 75, 100)) +
-    scale_fill_manual(values = c('#000000', '#FFFFFF')) +
+                       breaks = c(0, 50, 100),
+                       labels = c(0, 50, 100)) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -534,6 +762,72 @@ nrs15_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1j)
+fig_j <- nrs15_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_nrs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_rect(aes(ymin = 0, ymax = 15, 
+                  xmin = -1, xmax = 10),
+              fill = '#666666',
+              colour = '#666666') +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = 25, 
+               linetype = 2) +
+    geom_hline(yintercept = 50, 
+               linetype = 2) +
+    geom_hline(yintercept = 75, 
+               linetype = 2) +
+    geom_hline(yintercept = 100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) +
+    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
+    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
+    scale_y_continuous(limits = c(0, 100),
+                       breaks = c(0, 50, 100)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'NRS rating (0 to 100)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 16),
+          axis.text = element_text(colour = '#000000'),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines')),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines')))
+
+ggsave(filename = 'figures/fig_j.png', 
+       plot = fig_j,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -644,13 +938,23 @@ srs_nest %>%
     ggplot(data = .) +
     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = -25, 
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_hline(yintercept = -75, 
+               linetype = 2) +
+    geom_hline(yintercept = -100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) +
+    scale_fill_manual(values = c('#CCCCCC', '#000000')) +
+    scale_colour_manual(values = c('#000000', '#CCCCCC')) +
     labs(title = "SRS: Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as SRS rating = 0",
@@ -663,9 +967,8 @@ srs_nest %>%
                                                   to = 9, 
                                                   by = 1))) +
     scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -75, -50, -25, 0),
-                       labels = c(-100, -75, -50, -25, 0)) +
-    scale_fill_manual(values = c('#FFFFFF', '#000000')) +
+                       breaks = c(-100, -50, 0),
+                       labels = c(-100, -50, 0)) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -675,6 +978,71 @@ srs_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1m)
+fig_m <- srs_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_srs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+    aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = -25, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_hline(yintercept = -75, 
+               linetype = 2) +
+    geom_hline(yintercept = -100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) +
+    scale_fill_manual(values = c('#CCCCCC', '#000000')) +
+    scale_colour_manual(values = c('#000000', '#CCCCCC')) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -75, -50, -25, 0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100 to 0)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines'),
+                                      size = 25),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines'),
+                                      size = 25))
+
+ggsave(filename = 'figures/fig_m.png', 
+       plot = fig_m,
+       width = 9,
+       height = 4.8)
 ```
 
 ----
@@ -741,15 +1109,29 @@ srs15_nest %>%
                               ordered = TRUE)) %>% 
     # Plot
     ggplot(data = .) +
-    aes(x = intensity,
+     aes(x = intensity,
         y = rating,
-        fill = significant_p.value) +
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_rect(aes(ymin = 0, ymax = -15, 
+                  xmin = -1, xmax = 10),
+              fill = '#666666',
+              colour = '#666666') +
     geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = -25, 
                linetype = 2) +
-    geom_point(colour = '#000000',
-               shape = 21,
-               size = 2,
-               alpha = 0.7) + 
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_hline(yintercept = -75, 
+               linetype = 2) +
+    geom_hline(yintercept = -100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) +
+    scale_fill_manual(values = c('#CCCCCC', '#000000')) +
+    scale_colour_manual(values = c('#000000', '#CCCCCC')) +
     labs(title = "SRS (0-15): Binomial test of positive/negative rating distribution",
          subtitle = "Probability of 'success' = 0.5* | alpha = 0.05 | two-tailed p-value\nFilled circles: Distribution does not deviate significantly from expected distribution",
          caption = "* 'success' arbitrarily chosen as SRS rating > -16",
@@ -762,9 +1144,8 @@ srs15_nest %>%
                                                   to = 9, 
                                                   by = 1))) +
     scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -75, -50, -25, 0),
-                       labels = c(-100, -75, -50, -25, 0)) +
-    scale_fill_manual(values = c('#FFFFFF', '#000000')) +
+                       breaks = c(-100, -50, 0),
+                       labels = c(-100, -50, 0)) +
     facet_wrap(~ PID, ncol = 4) +
     theme(legend.position = 'none',
           panel.grid = element_blank(),
@@ -774,6 +1155,75 @@ srs15_nest %>%
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
+
+## Paper plot (Fig 1n)
+fig_n <- srs15_nest %>% 
+    # Select data columns
+    select(PID, intensity, significant_p.value) %>% 
+    # Unnest data
+    unnest() %>% 
+    # Join with original data
+    right_join(data_srs) %>% 
+    # Reclass intensity as an ordered factor
+    mutate(intensity = factor(intensity, 
+                              ordered = TRUE)) %>% 
+    ggplot(data = .) +
+     aes(x = intensity,
+        y = rating,
+        fill = significant_p.value,
+        colour = significant_p.value) +
+    geom_rect(aes(ymin = 0, ymax = -15, 
+                  xmin = -1, xmax = 10),
+              fill = '#666666',
+              colour = '#666666') +
+    geom_hline(yintercept = 0,
+               size = 1) +
+    geom_hline(yintercept = -25, 
+               linetype = 2) +
+    geom_hline(yintercept = -50, 
+               linetype = 2) +
+    geom_hline(yintercept = -75, 
+               linetype = 2) +
+    geom_hline(yintercept = -100, 
+               linetype = 2) +
+    geom_point(shape = 21,
+               size = 4,
+               stroke = 0.3) +
+    scale_fill_manual(values = c('#CCCCCC', '#000000')) +
+    scale_colour_manual(values = c('#000000', '#CCCCCC')) +
+    scale_y_continuous(limits = c(-100, 0),
+                       breaks = c(-100, -50, 0)) +
+    scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
+    labs(x = 'Rank stimulus intensity (0.25J increments)',
+         y = 'SRS rating (-100 to 0)') +
+    facet_wrap(~ PID, ncol = 4) +
+    theme_bw(base_size = 24) +
+    theme(legend.position = 'none',
+          plot.title = element_blank(),
+          plot.subtitle = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.1, 'lines'),
+          panel.border = element_rect(size = 1.5),
+          strip.background = element_rect(size = 1.5),
+          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
+                                                    r = 0, l = 0, 
+                                                    'lines'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
+          axis.title.y = element_text(margin = margin(t = 0, b = 0,
+                                                      r = 0.5, l = 0,
+                                                      'lines'),
+                                      size = 25),
+          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
+                                                      r = 0, l = 0,
+                                                      'lines'),
+                                      size = 25))
+
+ggsave(filename = 'figures/fig_n.png', 
+       plot = fig_n,
+       width = 9,
+       height = 4.8)
 ```
 
 ----

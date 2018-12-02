@@ -1,13 +1,16 @@
 .Rproj.user
+.Rapp.history
 .Rhistory
 .RData
 .Ruserdata
 .DS_Store
+paper-figures/
+figures/fig_*
 *_cache/
 *.txt
 *.csv
 *.rds
 *.xlsx
+*.pptx
 .dropbox
 Icon?
-.Rapp.history
