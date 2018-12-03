@@ -477,62 +477,6 @@ ggplot(data = spars_boot) +
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
-
-## Paper plot (Fig 1d)
-fig_d <- ggplot(data = spars_boot) +
-    aes(x = intensity,
-        fill = fill,
-        colour = fill) +
-    geom_hline(yintercept = 0, 
-               size = 1) +
-    geom_hline(yintercept = 25, 
-               linetype = 2) +
-    geom_hline(yintercept = -25, 
-               linetype = 2) +
-    geom_hline(yintercept = 50, 
-               linetype = 2) +
-    geom_hline(yintercept = -50, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, 0, 50)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'SPARS rating (-50 to 50)') +
-    facet_wrap(~ PID, ncol = 4) +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          strip.background = element_rect(size = 1.5),
-          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
-                                                    r = 0, l = 0, 
-                                                    'lines'),
-                                    size = 18),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_d.png', 
-       plot = fig_d,
-       width = 9,
-       height = 4.82)
 ```
 
 #### NRS
@@ -575,62 +519,6 @@ ggplot(data = nrs_boot) +
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
-
-## Paper plot (Fig 1h)
-fig_g <- ggplot(data = nrs_boot) +
-    aes(x = intensity,
-        fill = fill,
-        colour = fill) +
-    geom_hline(yintercept = 0, 
-               size = 1) +
-    geom_hline(yintercept = 25, 
-               linetype = 2) +
-    geom_hline(yintercept = 50, 
-               linetype = 2) +
-    geom_hline(yintercept = 75, 
-               linetype = 2) +
-    geom_hline(yintercept = 100, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(0, 100),
-                       breaks = c(0, 50, 100)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'NRS rating (0 to 100)') +
-    facet_wrap(~ PID, ncol = 4) +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          strip.background = element_rect(size = 1.5),
-          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
-                                                    r = 0, l = 0, 
-                                                    'lines'),
-                                    size = 18),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_g.png', 
-       plot = fig_g,
-       width = 9,
-       height = 4.82)
 ```
 
 #### SRS
@@ -675,62 +563,6 @@ ggplot(data = srs_boot) +
                                                     r = 1, 
                                                     l = 1, 
                                                     'lines')))
-
-## Paper plot (Fig 1j)
-fig_k <- ggplot(data = srs_boot) +
-    aes(x = intensity,
-        fill = fill,
-        colour = fill) +
-    geom_hline(yintercept = 0, 
-               size = 1) +
-    geom_hline(yintercept = -25, 
-               linetype = 2) +
-    geom_hline(yintercept = -50, 
-               linetype = 2) +
-    geom_hline(yintercept = -75, 
-               linetype = 2) +
-    geom_hline(yintercept = -100, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -50, 0)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'SRS rating (-100 to 0)') +
-    facet_wrap(~ PID, ncol = 4) +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          strip.background = element_rect(size = 1.5),
-          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
-                                                    r = 0, l = 0, 
-                                                    'lines'),
-                                    size = 18),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_k.png', 
-       plot = fig_k,
-       width = 9,
-       height = 4.82)
 ```
 
 ----
@@ -1062,56 +894,6 @@ ggplot(data = spars_boot_group) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank())
-
-## Paper plot (Fig 1e)
-fig_e <- ggplot(data = spars_boot_group) +
-    aes(x = intensity) +
-    geom_hline(yintercept = 0,
-               size = 1) +
-    geom_hline(yintercept = 25,
-               linetype = 2) +
-    geom_hline(yintercept = -25,
-               linetype = 2) +
-    geom_hline(yintercept = 50, 
-               linetype = 2) +
-    geom_hline(yintercept = -50, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci,
-                      fill = fill,
-                      colour = fill),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, 0, 50)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'SPARS rating (-50 to 50)') +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_e.png', 
-       plot = fig_e,
-       width = 10.4,
-       height = 10.4)
 ```
 
 #### NRS
@@ -1149,56 +931,6 @@ ggplot(data = nrs_boot_group) +
          y = 'NRS rating (0, 100)') +
     theme(legend.position = 'none',
           panel.grid = element_blank())
-
-## Paper plot (Fig 1h)
-fig_h <- ggplot(data = nrs_boot_group) +
-    aes(x = intensity) +
-    geom_hline(yintercept = 0, 
-               size = 1) +
-    geom_hline(yintercept = 25,
-               linetype = 2) +
-    geom_hline(yintercept = 50,
-               linetype = 2) +
-    geom_hline(yintercept = 75,
-               linetype = 2) +
-    geom_hline(yintercept = 100, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci,
-                      fill = fill,
-                      colour = fill),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(0, 100),
-                       breaks = c(0, 50, 100)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'NRS rating (0 to 100)') +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_h.png', 
-       plot = fig_h,
-       width = 10.4,
-       height = 10.4)
 ```
 
 #### SRS
@@ -1236,56 +968,6 @@ ggplot(data = srs_boot_group) +
          y = 'SRS rating (-100, 0)') +
     theme(legend.position = 'none',
           panel.grid = element_blank())
-
-## Paper plot (Fig 1l)
-fig_l <- ggplot(data = srs_boot_group) +
-    aes(x = intensity) +
-    geom_hline(yintercept = 0, 
-               size = 1) +
-    geom_hline(yintercept = -25,
-               linetype = 2) +
-    geom_hline(yintercept = -50,
-               linetype = 2) +
-    geom_hline(yintercept = -75,
-               linetype = 2) +
-    geom_hline(yintercept = -100, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci,
-                      fill = fill,
-                      colour = fill),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -50, 0)) +
-    scale_x_continuous(breaks = seq(from = 1, to = 9, by = 2)) +
-    labs(x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'SRS rating (-100 to 0)') +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_l.png', 
-       plot = fig_l,
-       width = 10.4,
-       height = 10.4)
 ```
 
 ----

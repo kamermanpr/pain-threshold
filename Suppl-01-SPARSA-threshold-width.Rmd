@@ -19,7 +19,7 @@ theme_set(new = theme_bw(base_size = 12))
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
                       fig.align = 'center',
-                      fig.path = './figures/Suppl-01-SPARSA-threshold-width/')
+                      fig.path = 'figures/Suppl-01-SPARSA-threshold-width/')
 ```
 
 ----
@@ -237,62 +237,6 @@ ggplot(data = data_boot) +
                                                     l = 1, 
                                                     'lines')),
           axis.text.x = element_text(angle = -90))
-
-## Paper plot (Fig 1a)
-fig_a <- ggplot(data = data_boot) +
-    aes(x = intensity,
-        fill = fill,
-        colour = fill) +
-    geom_hline(yintercept = 0,
-               size = 1) +
-    geom_hline(yintercept = -25, 
-               linetype = 2) +
-    geom_hline(yintercept = 25, 
-               linetype = 2) +
-    geom_hline(yintercept = 50, 
-               linetype = 2) +
-    geom_hline(yintercept = -50, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, 0, 50)) +
-    scale_x_continuous(breaks = 1:4) +
-    labs(x = 'Stimulus intensity (J)',
-         y = 'SPARS rating (-50 to 50)') +
-    facet_wrap(~ PID, ncol = 4) +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          strip.background = element_rect(size = 1.5),
-          strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
-                                                    r = 0, l = 0, 
-                                                    'lines'),
-                                    size = 18),
-          axis.text = element_text(colour = '#000000', 
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'), 
-                                   size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'), 
-                                   size = 25))
-
-ggsave(filename = 'figures/fig_a.png', 
-       plot = fig_a,
-       width = 9,
-       height = 10.4)
 ```
 
 ----
@@ -435,56 +379,6 @@ ggplot(data = data_boot_group) +
          y = 'SPARS rating (-50, 50)') +
     theme(legend.position = 'none',
           panel.grid = element_blank())
-
-## Paper plot (Fig 1a)
-fig_b <- ggplot(data = data_boot_group) +
-    aes(x = intensity) +
-    geom_hline(yintercept = 0,
-               size = 1) +
-    geom_hline(yintercept = -25, 
-               linetype = 2) +
-    geom_hline(yintercept = 25, 
-               linetype = 2) +
-    geom_hline(yintercept = 50, 
-               linetype = 2) +
-    geom_hline(yintercept = -50, 
-               linetype = 2) +
-    geom_crossbar(aes(y = tri_mean,
-                      ymin = lower_ci,
-                      ymax = upper_ci,
-                      fill = fill,
-                      colour = fill),
-                  fatten = 0,
-                  size = 0.3) +
-    scale_fill_manual(values = c('#000000', '#CCCCCC')) +
-    scale_colour_manual(values = c('#CCCCCC', '#000000')) +
-    scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, 0, 50)) +
-    scale_x_continuous(breaks = 1:4) +
-    labs(x = 'Stimulus intensity (J)',
-         y = 'SPARS rating (-50 to 50)') +
-    theme_bw(base_size = 24) +
-    theme(legend.position = 'none',
-          plot.title = element_blank(),
-          plot.subtitle = element_blank(),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          panel.border = element_rect(size = 1.5),
-          axis.text = element_text(colour = '#000000',
-                                   size = 23),
-          axis.title.y = element_text(margin = margin(t = 0, b = 0,
-                                                      r = 0.5, l = 0,
-                                                      'lines'),
-                                      size = 25),
-          axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
-                                                      r = 0, l = 0,
-                                                      'lines'),
-                                      size = 25))
-
-ggsave(filename = 'figures/fig_b.png', 
-       plot = fig_b,
-       width = 10.4,
-       height = 10.4)
 ```
 
 ----
