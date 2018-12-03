@@ -126,7 +126,7 @@ spars_boot %<>%
         mutate(boot = map(.x = data, 
                           ~ boot(data = .x$rating, 
                                  statistic = boot_tri_mean, 
-                                 R = 100, # For small sample size
+                                 R = 10000, # For small sample size
                                  stype = 'i')))
 
 # Extract CI from boot object
@@ -192,7 +192,7 @@ nrs_boot %<>%
         mutate(boot = map(.x = data, 
                           ~ boot(data = .x$rating, 
                                  statistic = boot_tri_mean, 
-                                 R = 100, # For small sample size
+                                 R = 10000, # For small sample size
                                  stype = 'i')))
 
 # Extract CI from boot object
@@ -263,7 +263,7 @@ srs_boot %<>%
         mutate(boot = map(.x = data, 
                           ~ boot(data = .x$rating, 
                                  statistic = boot_tri_mean, 
-                                 R = 100, # For small sample size
+                                 R = 10000, # For small sample size
                                  stype = 'i')))
 
 # Extract CI from boot object
@@ -760,7 +760,7 @@ set.seed(987654321)
 spars_boot_group %<>% mutate(boot = map(.x = data, 
                                         ~ boot(data = .x$tri_mean, 
                                                statistic = boot_tri_mean, 
-                                               R = 100, # For small sample size
+                                               R = 10000, # For small sample size
                                                stype = 'i')))
 
 # Extract CI from boot object
@@ -819,7 +819,7 @@ set.seed(987654321)
 nrs_boot_group %<>% mutate(boot = map(.x = data, 
                                       ~ boot(data = .x$tri_mean, 
                                              statistic = boot_tri_mean, 
-                                             R = 100, # For small sample size
+                                             R = 10000, # For small sample size
                                              stype = 'i')))
 
 # Extract CI from boot object
@@ -878,7 +878,7 @@ set.seed(987654321)
 srs_boot_group %<>% mutate(boot = map(.x = data, 
                                       ~ boot(data = .x$tri_mean, 
                                              statistic = boot_tri_mean, 
-                                             R = 100, # For small sample size
+                                             R = 10000, # For small sample size
                                              stype = 'i')))
 
 # Extract CI from boot object
