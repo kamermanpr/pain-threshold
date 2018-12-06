@@ -2,7 +2,7 @@
 title: "Supplement 4"
 subtitle: "Does the difference in stimulus intensity between successive stimuli affect intensity rating"
 author: "Peter Kamerman and Tory Madden"
-date: "02 Dec 2018"
+date: "06 Dec 2018"
 ---
 
 
@@ -56,7 +56,7 @@ data_sparsA %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -387,11 +387,11 @@ data_sparsB %>%
 ##  n obs: 752 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      752 752    5 2.58  1   3   5   7    9 ▇▅▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd  p0 p25 p50 p75 p100     hist
 ##    rating       0      752 752 -8.83 23.46 -50 -26  -4   5   50 ▆▂▃▇▇▃▁▁
 ```
@@ -710,11 +710,11 @@ data_nrs %>%
 ##  n obs: 753 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      753 753    5 2.59  1   3   5   7    9 ▇▅▅▃▃▅▅▅
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd p0 p25 p50 p75 p100     hist
 ##    rating       0      753 753 19.63 26.82  0   1   5  28   98 ▇▂▁▁▁▁▁▁
 ```
@@ -1033,11 +1033,11 @@ data_srs %>%
 ##  n obs: 644 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
 ##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
 ```
@@ -1228,8 +1228,8 @@ srs_nest %>%
          y = 'SRS rating (-100 to 0)') +
     scale_x_continuous(breaks = 1:9) +
     scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -75, -50, -25, 0),
-                       labels = c(-100, -75, -50, -25, 0)) +
+                       breaks = c(-100, -50, 0),
+                       labels = c(-100, -50, 0)) +
     scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
                          option = 'C') +
     facet_wrap(~ PID, ncol = 4) +
@@ -1305,51 +1305,7 @@ ggsave(filename = 'figures/fig_w.png',
        plot = fig_w,
        width = 9,
        height = 4.82)
-srs_nest %>% 
-    ggplot(data = .) +
-    aes(x = intensity,
-        y = rating,
-        fill = delta_intensity) +
-    geom_hline(yintercept = 0,
-               size = 1) +
-    geom_hline(yintercept = -25,
-               linetype = 2) +
-    geom_hline(yintercept = -50,
-               linetype = 2) +
-    geom_hline(yintercept = -75,
-               linetype = 2) +
-    geom_hline(yintercept = -100,
-               linetype = 2) +
-    geom_point(shape = 21,
-               size = 4,
-               stroke = 0.3) + 
-    labs(title = "SRS: Scatterplot of intensity ratings at each (rank) stimulus intensity\nfor all inter-stimulus intensity differences*",
-         caption = "* The absolute value of the difference in intensity between successive stimuli was used.\nMultiple points of the same colour indicates multiple stimuli with the same inter-stimulus intensity change.",
-         x = 'Rank stimulus intensity (0.25J increments)',
-         y = 'SRS rating (-100 to 0)') +
-    scale_x_continuous(breaks = 1:9) +
-    scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -50, 0),
-                       labels = c(-100, -50, 0)) +
-    scale_fill_viridis_c(name = 'Inter-stimulus change (J): ',
-                         option = 'C') +
-    facet_wrap(~ PID, ncol = 4) +
-    theme(legend.position = 'top',
-          legend.margin = margin(t = -0.2, 
-                                 l = 0, 
-                                 b = -0.4, 
-                                 r = 0, 
-                                 unit = 'lines'),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0.1, 'lines'),
-          strip.text = element_text(margin = margin(t = 0.1, 
-                                                    b = 0.1, 
-                                                    r = 1, 
-                                                    l = 1, 
-                                                    'lines')))
 ```
-
-<img src="figures/Suppl-04-stimulus-intensity-change/srs_plot2-2.png" style="display: block; margin: auto;" />
 
 ----
 

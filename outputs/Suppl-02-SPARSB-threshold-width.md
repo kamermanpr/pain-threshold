@@ -2,7 +2,7 @@
 title: "Supplement 2"
 subtitle: "SPARS B (including NRS and SRS): Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
-date: "02 Dec 2018"
+date: "06 Dec 2018"
 ---
 
 
@@ -100,11 +100,11 @@ data %>%
 ##  n obs: 6771 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete    n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0     6771 6771    5 2.58  1   3   5   7    9 ▇▃▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete    n   mean    sd   p0 p25 p50 p75 p100
 ##    rating    4622     2149 6771 -12.53 41.35 -100 -38   0   6   98
 ##      hist

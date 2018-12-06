@@ -2,7 +2,7 @@
 title: "Supplement 3"
 subtitle: "Binomial test analysis: Does the distribution of ratings differ from a theoretical 'NULL' distribution?"
 author: "Peter Kamerman and Tory Madden"
-date: "02 Dec 2018"
+date: "06 Dec 2018"
 ---
 
 
@@ -59,7 +59,7 @@ data_sparsA %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -299,11 +299,11 @@ data_sparsB %>%
 ##  n obs: 752 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      752 752    5 2.58  1   3   5   7    9 ▇▅▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd  p0 p25 p50 p75 p100     hist
 ##    rating       0      752 752 -8.83 23.46 -50 -26  -4   5   50 ▆▂▃▇▇▃▁▁
 ```
@@ -602,11 +602,11 @@ data_nrs %>%
 ##  n obs: 753 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      753 753    5 2.59  1   3   5   7    9 ▇▅▅▃▃▅▅▅
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd p0 p25 p50 p75 p100     hist
 ##    rating       0      753 753 19.63 26.82  0   1   5  28   98 ▇▂▁▁▁▁▁▁
 ```
@@ -1080,11 +1080,11 @@ data_srs %>%
 ##  n obs: 644 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
 ##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
 ```

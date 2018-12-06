@@ -2,7 +2,7 @@
 title: "Supplement 1"
 subtitle: "SPARS A: Width of the pain threshold"
 author: "Tory Madden and Peter Kamerman"
-date: "02 Dec 2018"
+date: "06 Dec 2018"
 ---
 
 
@@ -81,7 +81,7 @@ data %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -208,7 +208,7 @@ ggplot(data = data) +
           axis.text.x = element_text(angle = -90))
 ```
 
-<img src="./figures/Suppl-01-SPARSA-threshold-width/indiv_scatter-1.png" style="display: block; margin: auto;" />
+<img src="figures/Suppl-01-SPARSA-threshold-width/indiv_scatter-1.png" style="display: block; margin: auto;" />
 
 ### Trimean confidence interval plots
 
@@ -259,7 +259,7 @@ ggplot(data = data_boot) +
           axis.text.x = element_text(angle = -90))
 ```
 
-<img src="./figures/Suppl-01-SPARSA-threshold-width/indiv_ci-1.png" style="display: block; margin: auto;" />
+<img src="figures/Suppl-01-SPARSA-threshold-width/indiv_ci-1.png" style="display: block; margin: auto;" />
 
 ```r
 ## Paper plot (Fig 1a)
@@ -423,7 +423,7 @@ ggplot(data = data_group) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/Suppl-01-SPARSA-threshold-width/group_scatter-1.png" style="display: block; margin: auto;" />
+<img src="figures/Suppl-01-SPARSA-threshold-width/group_scatter-1.png" style="display: block; margin: auto;" />
 
 ### Trimean confidence interval plots
 
@@ -466,7 +466,7 @@ ggplot(data = data_boot_group) +
           panel.grid = element_blank())
 ```
 
-<img src="./figures/Suppl-01-SPARSA-threshold-width/group_ci-1.png" style="display: block; margin: auto;" />
+<img src="figures/Suppl-01-SPARSA-threshold-width/group_ci-1.png" style="display: block; margin: auto;" />
 
 ```r
 ## Paper plot (Fig 1a)
