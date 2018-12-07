@@ -436,7 +436,7 @@ ggplot(data = data_boot_group) +
     theme(legend.position = 'none',
           panel.grid = element_blank())
 
-## Paper plot (Fig 1a)
+## Paper plot (Fig 1b)
 fig_b <- ggplot(data = data_boot_group) +
     aes(x = intensity) +
     geom_hline(yintercept = 0,

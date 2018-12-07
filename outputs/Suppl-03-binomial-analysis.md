@@ -2,7 +2,7 @@
 title: "Supplement 3"
 subtitle: "Binomial test analysis: Does the distribution of ratings differ from a theoretical 'NULL' distribution?"
 author: "Peter Kamerman and Tory Madden"
-date: "06 Dec 2018"
+date: "07 Dec 2018"
 ---
 
 
@@ -59,7 +59,7 @@ data_sparsA %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -299,11 +299,11 @@ data_sparsB %>%
 ##  n obs: 752 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      752 752    5 2.58  1   3   5   7    9 ▇▅▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd  p0 p25 p50 p75 p100     hist
 ##    rating       0      752 752 -8.83 23.46 -50 -26  -4   5   50 ▆▂▃▇▇▃▁▁
 ```
@@ -522,7 +522,7 @@ fig_f <- sparsB_nest %>%
     scale_fill_manual(values = c('#000000', '#CCCCCC')) +
     scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, -25, 0, 25, 50)) +
+                       breaks = c(-50, 0, 50)) +
     scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
     labs(x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SPARS rating (-50 to 50)') +
@@ -538,14 +538,17 @@ fig_f <- sparsB_nest %>%
           strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
                                                     r = 0, l = 0, 
                                                     'lines'),
-                                    size = 16),
-          axis.text = element_text(colour = '#000000'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
           axis.title.y = element_text(margin = margin(t = 0, b = 0,
                                                       r = 0.5, l = 0,
-                                                      'lines')),
+                                                      'lines'),
+                                      size = 25),
           axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
                                                       r = 0, l = 0,
-                                                      'lines')))
+                                                      'lines'),
+                                      size = 25))
 
 ggsave(filename = 'figures/fig_f.png', 
        plot = fig_f,
@@ -602,11 +605,11 @@ data_nrs %>%
 ##  n obs: 753 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      753 753    5 2.59  1   3   5   7    9 ▇▅▅▃▃▅▅▅
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd p0 p25 p50 p75 p100     hist
 ##    rating       0      753 753 19.63 26.82  0   1   5  28   98 ▇▂▁▁▁▁▁▁
 ```
@@ -834,14 +837,17 @@ fig_i <- nrs0_nest %>%
           strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
                                                     r = 0, l = 0, 
                                                     'lines'),
-                                    size = 16),
-          axis.text = element_text(colour = '#000000'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
           axis.title.y = element_text(margin = margin(t = 0, b = 0,
                                                       r = 0.5, l = 0,
-                                                      'lines')),
+                                                      'lines'),
+                                      size = 25),
           axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
                                                       r = 0, l = 0,
-                                                      'lines')))
+                                                      'lines'),
+                                      size = 25))
 
 ggsave(filename = 'figures/fig_i.png', 
        plot = fig_i,
@@ -1016,14 +1022,17 @@ fig_j <- nrs15_nest %>%
           strip.text = element_text(margin = margin(t = 0.2, b = 0.2, 
                                                     r = 0, l = 0, 
                                                     'lines'),
-                                    size = 16),
-          axis.text = element_text(colour = '#000000'),
+                                    size = 18),
+          axis.text = element_text(colour = '#000000',
+                                   size = 23),
           axis.title.y = element_text(margin = margin(t = 0, b = 0,
                                                       r = 0.5, l = 0,
-                                                      'lines')),
+                                                      'lines'),
+                                      size = 25),
           axis.title.x = element_text(margin = margin(t = 0.5, b = 0,
                                                       r = 0, l = 0,
-                                                      'lines')))
+                                                      'lines'),
+                                      size = 25))
 
 ggsave(filename = 'figures/fig_j.png', 
        plot = fig_j,
@@ -1080,11 +1089,11 @@ data_srs %>%
 ##  n obs: 644 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
 ##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
 ```
@@ -1274,7 +1283,7 @@ fig_m <- srs_nest %>%
     scale_fill_manual(values = c('#CCCCCC', '#000000')) +
     scale_colour_manual(values = c('#000000', '#CCCCCC')) +
     scale_y_continuous(limits = c(-100, 0),
-                       breaks = c(-100, -75, -50, -25, 0)) +
+                       breaks = c(-100, -50, 0)) +
     scale_x_discrete(breaks = seq(from = 1, to = 9, by = 2)) +
     labs(x = 'Rank stimulus intensity (0.25J increments)',
          y = 'SRS rating (-100 to 0)') +
