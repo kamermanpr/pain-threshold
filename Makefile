@@ -40,24 +40,24 @@ outputs/Suppl-01-SPARSA-threshold-width.pdf: \
 Suppl-01-SPARSA-threshold-width.Rmd \
 data-cleaned/SPARS_A.rds
 	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/')"
-	mv figures/Suppl-01-SPARSA-threshold-width outputs/figures/
+	rm -r figures/Suppl-01-SPARSA-threshold-width
 
 outputs/Suppl-02-SPARSB-threshold-width.pdf: \
 Suppl-02-SPARSB-threshold-width.Rmd \
 data-cleaned/SPARS_B.rds
 	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/')"
-	mv figures/Suppl-02-SPARSB-threshold-width outputs/figures/
+	rm -r figures/Suppl-02-SPARSB-threshold-width
 
 outputs/Suppl-03-binomial-analysis.pdf: \
 Suppl-03-binomial-analysis.Rmd \
 data-cleaned/SPARS_A.rds \
 data-cleaned/SPARS_B.rds
 	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/')"
-	mv figures/Suppl-03-binomial-analysis outputs/figures/
+	rm -r figures/Suppl-03-binomial-analysis
 
 outputs/Suppl-04-stimulus-intensity-change.pdf: \
 Suppl-04-stimulus-intensity-change.Rmd \
 data-cleaned/SPARS_A.rds \
 data-cleaned/SPARS_B.rds
 	Rscript -e "rmarkdown::render('$<', output_dir = 'outputs/')"
-	mv figures/Suppl-04-stimulus-intensity-change outputs/figures/
+	rm -r figures/Suppl-04-stimulus-intensity-change
