@@ -300,8 +300,8 @@ sparsB_nest %>%
                                                   to = 9, 
                                                   by = 1))) +
     scale_y_continuous(limits = c(-50, 50),
-                       breaks = c(-50, -25, 0, 25, 50),
-                       labels = c(-50, -25, 0, 25, 50)) +
+                       breaks = c(-50, 0, 50),
+                       labels = c(-50, 0, 50)) +
     scale_fill_manual(values = c('#000000', '#CCCCCC')) +
     scale_colour_manual(values = c('#CCCCCC', '#000000')) +
     facet_wrap(~ PID, ncol = 4) +

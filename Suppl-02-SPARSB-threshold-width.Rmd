@@ -201,9 +201,6 @@ nrs_boot %<>%
                          ~ boot.ci(.x,
                                    type = 'basic')))
 
-# Remove problematic value ID01, rank intensity: 3 (no variation), row 14
-nrs_boot <- nrs_boot[-14, ]
-
 # Extract the data, giving original trimean and bootstrapped CI
 nrs_boot %<>% 
     mutate(tri_mean = map_dbl(.x = boot_ci,
