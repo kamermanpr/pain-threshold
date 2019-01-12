@@ -2,7 +2,7 @@
 title: "Supplement 4"
 subtitle: "Does the difference in stimulus intensity between successive stimuli affect intensity rating"
 author: "Peter Kamerman and Tory Madden"
-date: "06 Dec 2018"
+date: "12 Jan 2019"
 ---
 
 
@@ -56,7 +56,7 @@ data_sparsA %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -387,11 +387,11 @@ data_sparsB %>%
 ##  n obs: 752 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      752 752    5 2.58  1   3   5   7    9 ▇▅▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd  p0 p25 p50 p75 p100     hist
 ##    rating       0      752 752 -8.83 23.46 -50 -26  -4   5   50 ▆▂▃▇▇▃▁▁
 ```
@@ -710,11 +710,11 @@ data_nrs %>%
 ##  n obs: 753 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      753 753    5 2.59  1   3   5   7    9 ▇▅▅▃▃▅▅▅
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd p0 p25 p50 p75 p100     hist
 ##    rating       0      753 753 19.63 26.82  0   1   5  28   98 ▇▂▁▁▁▁▁▁
 ```
@@ -1033,11 +1033,11 @@ data_srs %>%
 ##  n obs: 644 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ───────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
 ##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
 ```
@@ -1318,39 +1318,44 @@ sessionInfo()
 
 ```
 ## R version 3.5.1 (2018-07-02)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS  10.14.1
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Debian GNU/Linux 9 (stretch)
 ## 
 ## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## BLAS: /usr/lib/openblas-base/libblas.so.3
+## LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 ## 
 ## locale:
-## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
 ##  [1] bindrcpp_0.2.2  skimr_1.0.3     magrittr_1.5    forcats_0.3.0  
-##  [5] stringr_1.3.1   dplyr_0.7.8     purrr_0.2.5     readr_1.2.1    
+##  [5] stringr_1.3.1   dplyr_0.7.8     purrr_0.2.5     readr_1.3.0    
 ##  [9] tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.0        cellranger_1.1.0  pillar_1.3.0     
-##  [4] compiler_3.5.1    plyr_1.8.4        bindr_0.1.1      
-##  [7] tools_3.5.1       digest_0.6.18     viridisLite_0.3.0
-## [10] lubridate_1.7.4   jsonlite_1.5      evaluate_0.12    
-## [13] nlme_3.1-137      gtable_0.2.0      lattice_0.20-38  
-## [16] pkgconfig_2.0.2   rlang_0.3.0.1     cli_1.0.1        
-## [19] rstudioapi_0.8    yaml_2.2.0        haven_2.0.0      
-## [22] withr_2.1.2.9000  xml2_1.2.0        httr_1.3.1       
-## [25] knitr_1.20        hms_0.4.2         rprojroot_1.3-2  
-## [28] grid_3.5.1        tidyselect_0.2.5  glue_1.3.0       
-## [31] R6_2.3.0          readxl_1.1.0      rmarkdown_1.10   
-## [34] modelr_0.1.2      backports_1.1.2   scales_1.0.0     
-## [37] htmltools_0.3.6   rvest_0.3.2       assertthat_0.2.0 
-## [40] colorspace_1.3-2  labeling_0.3      stringi_1.2.4    
-## [43] lazyeval_0.2.1    munsell_0.5.0     broom_0.5.0      
-## [46] crayon_1.3.4
+##  [1] tidyselect_0.2.5  xfun_0.4          haven_2.0.0      
+##  [4] lattice_0.20-35   colorspace_1.3-2  generics_0.0.2   
+##  [7] htmltools_0.3.6   viridisLite_0.3.0 yaml_2.2.0       
+## [10] rlang_0.3.0.1     pillar_1.3.1      glue_1.3.0       
+## [13] withr_2.1.2       modelr_0.1.2      readxl_1.2.0     
+## [16] bindr_0.1.1       plyr_1.8.4        munsell_0.5.0    
+## [19] gtable_0.2.0      cellranger_1.1.0  rvest_0.3.2      
+## [22] evaluate_0.12     labeling_0.3      knitr_1.21       
+## [25] broom_0.5.1       Rcpp_1.0.0        scales_1.0.0     
+## [28] backports_1.1.3   jsonlite_1.6      hms_0.4.2        
+## [31] digest_0.6.18     stringi_1.2.4     grid_3.5.1       
+## [34] cli_1.0.1         tools_3.5.1       lazyeval_0.2.1   
+## [37] crayon_1.3.4      pkgconfig_2.0.2   xml2_1.2.0       
+## [40] lubridate_1.7.4   assertthat_0.2.0  rmarkdown_1.11   
+## [43] httr_1.4.0        rstudioapi_0.8    R6_2.3.0         
+## [46] nlme_3.1-137      compiler_3.5.1
 ```

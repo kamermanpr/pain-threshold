@@ -2,7 +2,7 @@
 title: "Supplement 3"
 subtitle: "Binomial test analysis: Does the distribution of ratings differ from a theoretical 'NULL' distribution?"
 author: "Peter Kamerman and Tory Madden"
-date: "07 Dec 2018"
+date: "12 Jan 2019"
 ---
 
 
@@ -12,10 +12,10 @@ date: "07 Dec 2018"
 # Question
 For each participant, and at each stimulus intensity, does the distribution of SPARS, NRS, or SRS ratings differ significantly from a theoretical 'NULL' distribution?
 
-To answer the question, we used the binomial test. The binomial test is an exact test of the statistical significance of deviations from a theoretically expected distribution of observations into two categories. As such, using the test required that we dichotomize the continuous rating data we collected (generally not a good thing, but here it is appropriate). 
+To answer the question, we used the binomial test. The binomial test is useful when there are two possible outcomes, because it assesses whether the distribution of the observed data deviates from a distribution that would theoretically be expected to occur by chance. Using the test required that we dichotomize the continuous rating data we collected (generally not a good thing, but here it is appropriate). 
 
 The SPARS ranges from -50 ('no sensation') to +50 ('most intense pain you can imagine'), and therefore ratings can span 0 (pain threshold, 'the exact point at which you feel transitions to pain'). We therefore coded SPARS ratings < 0 as being **'negative'**, and ratings > 0 as being **'positive'**. In the first SPARS experiment (SPARS A), participants were not allowed to record a stimulus as 0 , but in the second SPARS experiment (SPARS B), they could record stimuli as 0 on the scale. We felt that the 0 ratings in the SPARS B experiment were uninformative, and so we excluded ratings of 0 from the analysis (we describe the number of zero ratings per participant below). 
-The NRS ranges from 0 ('no pain') to 100 ('most intense pain you can imagine'), and therefore ratings immediately to the right of the 0-point of the scale mark the transition from non-painful to painful sensation. We therefore coded NRS ratings = 0 as being **'negative'**, and ratings > 0 as being **'positive'**. In addition, it has been reported that individuals use the first 15 points of a 0 to 100 NRS to record non-painful stimuli (NEEDS A REFERENCE), and so we also analysed the NRS data with NRS ratings $\leq$ 15 as being **'negative'**, and ratings >15 as being **'positive'**.
+The NRS ranges from 0 ('no pain') to 100 ('most intense pain you can imagine'), and therefore ratings immediately to the right of the 0-point of the scale mark the transition from non-painful to painful sensation. We therefore coded NRS ratings = 0 as being **'negative'**, and ratings > 0 as being **'positive'**. In addition, it has been reported that individuals use the first 15 points of a 0 to 100 NRS to record non-painful stimuli (Littman et al, 1985), and so we also analysed the NRS data with NRS ratings $\leq$ 15 as being **'negative'**, and ratings >15 as being **'positive'**.
 
 The SRS ranges from -100 ('no sensation') to 0 ('just painful/pain threshold'), and therefore ratings immediately to the left of the 0-point of the scale mark the transition from non-painful to painful sensation. We therefore coded SRS ratings = 0 as being **'positive'**, and ratings < 0 as being **'negative'**.  
 
@@ -59,7 +59,7 @@ data_sparsA %>%
 ##  n obs: 1927 
 ##  n variables: 2 
 ## 
-## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##   variable missing complete    n  mean    sd  p0    p25 p50   p75 p100
 ##  intensity       0     1927 1927  2.47  0.93   1   1.75 2.5  3.25    4
 ##     rating       0     1927 1927 -4.45 22.31 -50 -20    2   10      45
@@ -299,11 +299,11 @@ data_sparsB %>%
 ##  n obs: 752 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      752 752    5 2.58  1   3   5   7    9 ▇▅▅▅▃▅▅▃
 ## 
-## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd  p0 p25 p50 p75 p100     hist
 ##    rating       0      752 752 -8.83 23.46 -50 -26  -4   5   50 ▆▂▃▇▇▃▁▁
 ```
@@ -605,11 +605,11 @@ data_nrs %>%
 ##  n obs: 753 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      753 753    5 2.59  1   3   5   7    9 ▇▅▅▃▃▅▅▅
 ## 
-## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n  mean    sd p0 p25 p50 p75 p100     hist
 ##    rating       0      753 753 19.63 26.82  0   1   5  28   98 ▇▂▁▁▁▁▁▁
 ```
@@ -1089,11 +1089,11 @@ data_srs %>%
 ##  n obs: 644 
 ##  n variables: 2 
 ## 
-## ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:integer ───────────────────────────────────────────────────────────
 ##   variable missing complete   n mean   sd p0 p25 p50 p75 p100     hist
 ##  intensity       0      644 644    5 2.58  1   3   5   7    9 ▇▃▅▅▅▅▃▃
 ## 
-## ── Variable type:numeric ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────
 ##  variable missing complete   n   mean    sd   p0 p25 p50 p75 p100     hist
 ##    rating       0      644 644 -54.46 35.19 -100 -88 -63 -21    0 ▇▃▃▂▂▂▃▆
 ```
@@ -1515,34 +1515,40 @@ sessionInfo()
 
 ```
 ## R version 3.5.1 (2018-07-02)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS  10.14.1
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Debian GNU/Linux 9 (stretch)
 ## 
 ## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## BLAS: /usr/lib/openblas-base/libblas.so.3
+## LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 ## 
 ## locale:
-## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
 ##  [1] bindrcpp_0.2.2  skimr_1.0.3     magrittr_1.5    forcats_0.3.0  
-##  [5] stringr_1.3.1   dplyr_0.7.8     purrr_0.2.5     readr_1.2.1    
+##  [5] stringr_1.3.1   dplyr_0.7.8     purrr_0.2.5     readr_1.3.0    
 ##  [9] tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
-##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
-##  [9] lubridate_1.7.4  jsonlite_1.5     evaluate_0.12    nlme_3.1-137    
-## [13] gtable_0.2.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.3.0.1   
+##  [1] Rcpp_1.0.0       cellranger_1.1.0 plyr_1.8.4       pillar_1.3.1    
+##  [5] compiler_3.5.1   bindr_0.1.1      tools_3.5.1      digest_0.6.18   
+##  [9] lubridate_1.7.4  jsonlite_1.6     evaluate_0.12    nlme_3.1-137    
+## [13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1   
 ## [17] cli_1.0.1        rstudioapi_0.8   yaml_2.2.0       haven_2.0.0     
-## [21] withr_2.1.2.9000 xml2_1.2.0       httr_1.3.1       knitr_1.20      
-## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
-## [29] glue_1.3.0       R6_2.3.0         readxl_1.1.0     rmarkdown_1.10  
-## [33] modelr_0.1.2     backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
-## [37] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 stringi_1.2.4   
-## [41] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4
+## [21] xfun_0.4         withr_2.1.2      xml2_1.2.0       httr_1.4.0      
+## [25] knitr_1.21       hms_0.4.2        generics_0.0.2   grid_3.5.1      
+## [29] tidyselect_0.2.5 glue_1.3.0       R6_2.3.0         readxl_1.2.0    
+## [33] rmarkdown_1.11   modelr_0.1.2     backports_1.1.3  scales_1.0.0    
+## [37] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2
+## [41] stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.1     
+## [45] crayon_1.3.4
 ```
