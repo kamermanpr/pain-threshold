@@ -5,7 +5,7 @@
 .Ruserdata
 .DS_Store
 paper-figures/
-figures
+figures/
 outputs/figures
 *_cache/
 *.txt
