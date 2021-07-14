@@ -1,10 +1,16 @@
 # Pain threshold
 
 ## Bibliometric information
-(to be provided later)
+Madden VJ, Kamerman PR, Catley MJ, Bellan V, Russek LN, Camfferman D, Lorimer Moseley G. Rethinking pain threshold as a zone of uncertainty. _bioRxiv_ 2019:521302. DOI: [10.1101/521302](https://doi.org/10.1101/521302).
 
 ## Abstract
-(to be added later)
+**Background** The pain threshold is traditionally conceptualised as a boundary that lies between painful and non-painful events, suggesting a reasonably stable relationship between stimulus and response. In two previous experiments, participants received laser stimuli of various intensities and rated each stimulus on the Sensation and Pain Rating Scale (SPARS), which includes ranges for rating painful and non-painful events and clearly defines the presumed boundary between them. In the second experiment, participants also provided ratings on the conventional 0-100 Numerical Rating Scale for pain (NRS) and a new rating scale for non-painful events. Those data showed the SPARS to have a curvilinear stimulus-response relationship, reflecting that several different intensities may be rated as painful and non-painful in different trials. This suggests that participants were uncertain about painfulness over a range of intensities and calls into question the idea of a boundary between non-painful and painful events. The current study aimed to determine the number of different stimulus intensities across which each participant provided ‘painful’ and ‘non-painful’ reports in different trials.
+
+**Methods** We undertook novel exploratory analyses on data from the aforementioned two experiments (n = 19, 11 female, 18-31 years old; n = 7, 5 female, 21-30 years old). We used the binomial test to formally determine the width of this ‘zone of uncertainty’ about painfulness, using ratings on the SPARS and the comparator scales, and data visualisation to assess whether trial-to-trial change in stimulus intensity influences ratings.
+
+**Results** We found that the width of the zone of uncertainty varied notably between individuals and that the zone was non-continuous for most participants. Plots of group-level data concealed the inter-individual variability apparent in the individual plots, but still showed a wide zone of uncertainty on both the SPARS and the NRS, but a narrow zone on the scale for non-painful events. There was no evidence that trial-to-trial change in stimulus intensity influenced ratings.
+
+**Conclusions** The variability revealed by this study has important design implications for experiments that include initial calibration of repeatedly delivered stimuli. The variability also stands to inflate the size of sample that is required for adequate statistical powering of experiments, and provides rationale for the use of statistical approaches that account for individual variability in studies of pain. Finally, the high variability implies that, if experimental stimuli are to be used in clinical phenotyping, many trials may be required to obtain results that represent a single patient’s actual response profile.
 
 ## Analysis outputs
 
